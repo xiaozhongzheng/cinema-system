@@ -104,13 +104,16 @@ export default {
           // this.$http.post("/login", data).then((res) => {
 
           // });
-          try {
-            const res = await request({
-              url: "/login",
-              method: "post",
-              data,
-            });
-            // 给token赋值
+
+          const res = await request({
+            url: "/login",
+            method: "post",
+            data,
+          });
+
+          // 给token赋值
+          if (res) { // res不为null时再进行赋值
+            this.$message.success('登录成功')
             const id = res.id;
             localStorage.setItem(`token`, res.token);
             // 判断角色类型（管理员，员工，用户）
@@ -125,8 +128,6 @@ export default {
             this.$router.push({
               path: toPath,
             });
-          } catch (error) {
-            console.log(error);
           }
         }
       });

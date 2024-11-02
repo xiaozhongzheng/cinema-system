@@ -6,7 +6,7 @@ module.exports = defineConfig({
     port: 8088,
     proxy: {
       '/api': {
-        target: 'http://47.96.128.212:8080',
+        target: `http://localhost:8080`,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

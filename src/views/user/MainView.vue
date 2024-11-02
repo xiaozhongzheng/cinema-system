@@ -138,7 +138,7 @@
 
 <script>
 import { getUserById } from "@/api/user";
-import request from '@/utils/request'
+import {logout} from '@/api/user'
 export default {
   data() {
     return {
@@ -193,7 +193,10 @@ export default {
     handleCommand(command) {
       if (command == "out") {
         // 用户退出登录
-        this.logout();
+        this.logout({
+          roleId: localStorage.getItem('roleId'),
+          userId: localStorage.getItem('id')
+        });
         return;
       }
       if (command != this.indexPath) {
@@ -202,12 +205,10 @@ export default {
       }
     },
     // 实现退出登录
-    async logout() {
-      await request({
-        url:`/logout/${this.roleId}`,
-        method: 'post'
-      })
+    async logout(data) {
+      await logout(data)
       // 清空本地存储的数据
+      this.$message.success('退出成功')
       localStorage.clear();
       this.$router.push("/login");
       
