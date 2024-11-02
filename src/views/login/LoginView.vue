@@ -8,17 +8,17 @@
       class="form"
       style="text-align: center;"
     >
-     <div style="width: 100%;height: 100px;line-height: 100px">
-      <el-avatar
-        shape="square"
-        :size="50"
-        fit="fill"
-        :src="url"
-        style="vertical-align: middle;"
-      ></el-avatar>
-      <span style="font-size: 24px;margin-left: 10px"> 影院管理系统</span>
+      <div style="width: 100%;height: 100px;line-height: 100px">
+        <el-avatar
+          shape="square"
+          :size="50"
+          fit="fill"
+          :src="url"
+          style="vertical-align: middle;"
+        ></el-avatar>
+        <span style="font-size: 24px;margin-left: 10px"> 影院管理系统</span>
 
-     </div>
+      </div>
 
       <el-form-item
         label="账号"
@@ -39,7 +39,7 @@
         <el-input
           v-model="userForm.password"
           class="input"
-        show-password
+          show-password
           placeholder="请输入密码"
         ></el-input>
       </el-form-item>
@@ -72,7 +72,8 @@
   </div>
 </template>
   
-  <script>
+<script>
+import request from "@/utils/request";
 export default {
   data() {
     return {
@@ -91,41 +92,42 @@ export default {
           { min: 3, max: 10, message: "密码的位数在3到10之间" },
         ],
       },
-      url: require('@/assets/logo.png'),
-
+      url: require("@/assets/logo.png"),
     };
   },
   created() {},
   methods: {
     userLogin(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
           let data = this.userForm;
-          this.$http.post("/login", data).then((res) => {
-            if (res.data.code === 1) {
-              this.$message.success("登录成功");
-              // 给token赋值
-              const id = res.data.data.id;
-              localStorage.setItem(`token`, res.data.data.token);
-              // 判断角色类型（管理员，员工，用户）
-              const roleId = res.data.data.roleId
-              localStorage.setItem("roleId", roleId);
-              localStorage.setItem("id", id);
-              localStorage.setItem("username", res.data.data.username);
-              let toPath = "/admin";
-              if (roleId == 0) {
-                toPath = "/user";
-              }
-              this.$router.push({
-                path: toPath,
-              });
-            } else {
-              this.$message.error(res.data.message);
+          // this.$http.post("/login", data).then((res) => {
+
+          // });
+          try {
+            const res = await request({
+              url: "/login",
+              method: "post",
+              data,
+            });
+            // 给token赋值
+            const id = res.id;
+            localStorage.setItem(`token`, res.token);
+            // 判断角色类型（管理员，员工，用户）
+            const roleId = res.roleId;
+            localStorage.setItem("roleId", roleId);
+            localStorage.setItem("id", id);
+            localStorage.setItem("username", res.username);
+            let toPath = "/admin";
+            if (roleId == 0) {
+              toPath = "/user";
             }
-          });
-        } else {
-          console.log("error submit!!");
-          return false;
+            this.$router.push({
+              path: toPath,
+            });
+          } catch (error) {
+            console.log(error);
+          }
         }
       });
     },
@@ -137,7 +139,6 @@ export default {
 </script>
   
 <style scoped>
-
 #login {
   width: 100%;
   height: 100%;

@@ -22,37 +22,38 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-axios.interceptors.request.use(config => {
-  // 检查请求头是否包含token
+
+// axios.interceptors.request.use(config => {
+//   // 检查请求头是否包含token
   
-  // const base = process.env.VUE_APP_BASEURL
-  const token = localStorage.getItem('token')
-  if (token!==undefined && token!=='') {
-    // 给请求头设置token
-    config.headers.Authorization = token;
-  }
-  const roleId = localStorage.getItem('roleId');
-  const url = config.url + "";
-  // config.baseURL=`${base}/api`;
-  config.baseURL=`/api`;
+//   // const base = process.env.VUE_APP_BASEURL
+//   const token = localStorage.getItem('token')
+//   if (token!==undefined && token!=='') {
+//     // 给请求头设置token
+//     config.headers.Authorization = token;
+//   }
+//   const roleId = localStorage.getItem('roleId');
+//   const url = config.url + "";
+//   // config.baseURL=`${base}/api`;
+//   config.baseURL=`/api`;
 
 
-  if(!url.includes('admin') && !url.includes('film/single') 
-  && !url.includes('upload') && !url.includes('logout') && !url.includes('password')){
-    if(roleId == 2){
-      config.baseURL+='/admin'
-    }else if(roleId == 1){
-      config.baseURL+='/employee'
-    }else if(roleId == 0){
-      config.baseURL+='/user'
-    }
-  }
+//   if(!url.includes('admin') && !url.includes('film/single') 
+//   && !url.includes('upload') && !url.includes('logout') && !url.includes('password')){
+//     if(roleId == 2){
+//       config.baseURL+='/admin'
+//     }else if(roleId == 1){
+//       config.baseURL+='/employee'
+//     }else if(roleId == 0){
+//       config.baseURL+='/user'
+//     }
+//   }
  
   
-  return config;
-}, err => {
+//   return config;
+// }, err => {
 
-  return err;
-})
+//   return err;
+// })
 
 
