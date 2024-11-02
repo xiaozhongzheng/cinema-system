@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="userHome"
-  >
+  <div id="userHome">
 
     <el-carousel
       indicator-position="outside"
@@ -54,9 +52,16 @@
               @click="toBuyFilm(item.id)"
             >购票</div>
           </li>
+          <div
+            v-if="hotFilmArr.length<7 "
+            style="display: flex;"
+          >
+            <li v-for="k in (8-hotFilmArr.length)%4">
+            </li>
+          </div>
 
         </ul>
-        
+
         <div style="text-align: left;height: 30px;line-height: 30px;margin: 20px 0px">
           <span style="color: rgb(231, 209, 121);font-size: 24px">即将上映（{{ upcomingArr.length }}）</span>
 
@@ -88,12 +93,13 @@
               @click="toBuyFilm(item.id)"
             >购票</div>
           </li>
-          <li v-if="upcomingArr.length<7" v-for="n in (8-upcomingArr.length)%4" >
-             
-          </li>
+          <div v-if="upcomingArr.length<7 ">
+            <li v-for="k in (8-upcomingArr.length)%4">
+            </li>
+          </div>
 
         </ul>
-       
+
       </div>
 
       <div class="right">
@@ -153,7 +159,7 @@
 </template>
 
 <script>
-import { getRecentFilmImage, getFilmListByScore } from "@/api/film";
+import film from "@/api/film";
 export default {
   data() {
     return {
@@ -169,9 +175,10 @@ export default {
     };
   },
   created() {
-    // this.getFilmes(2);
-    // this.getFilmes(1);
-    // this.getFilmListByScore();
+    this.getFilmes(2);
+    this.getFilmes(1);
+
+    this.getFilmListByScore();
   },
   methods: {
     toShowAllFilm() {
@@ -179,30 +186,13 @@ export default {
         name: "movies",
       });
     },
-    getRecentImages() {
-      getRecentFilmImage(this.num).then((res) => {
-        if (res.data.code === 1) {
-          this.urlArr = res.data.data;
-        }
-      });
+
+    async getFilmListByScore() {
+      this.topFilmArr = await film.getFilmListByScore(this.num);
     },
-    getFilmListByScore() {
-      getFilmListByScore(this.num).then((res) => {
-        if (res.data.code === 1) {
-          this.topFilmArr = res.data.data;
-        }
-      });
-    },
-    getFilmes(status) {
-      this.$http.get(`/film/list/${status}`).then((res) => {
-        if (res.data.code === 1) {
-          if (status == 2) {
-            this.hotFilmArr = res.data.data;
-          } else {
-            this.upcomingArr = res.data.data;
-          }
-        }
-      });
+    async getFilmes(status) {
+      const res = await film.getFilmesByStatus(status);
+      status === 2 ? (this.hotFilmArr = res) : (this.upcomingArr = res);
     },
     toShowFilmDetail(id) {
       this.$router.push({
@@ -242,7 +232,6 @@ li {
 }
 .mainHome {
   display: flex;
-
 }
 .mainHome .left {
   /* float: left; */
@@ -269,7 +258,6 @@ li {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transform: scale(1.1);
-  
 }
 .mainHome .left ul li .buyBtn {
   color: red;

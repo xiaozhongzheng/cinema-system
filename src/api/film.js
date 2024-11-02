@@ -1,18 +1,32 @@
 import axios from 'axios'
 
+import request from '@/utils/request'
 
-export function getRecentFilmImage(num){
+function getFilmesByStatus(status){
+    return request({
+        url: `/film/list/${status}`
+    })
+}
+
+
+function getRecentFilmImage(num){
     let res = axios.get(`/film/recent/${num}`)
     return res
 }
 
-export function getFilmListByScore(num){
-    let res = axios.get(`/film/score`,{
+function getFilmListByScore(num){
+    // let res = axios.get(`/film/score`,{
+    //     params: {
+    //         num: num
+    //     }
+    // })
+    // return res
+    return request({
+        url: '/film/score',
         params: {
             num: num
         }
     })
-    return res
 }
 
 
@@ -33,4 +47,11 @@ export function pageQueryFilmes(pageNo,pageSize,type,region,title){
         }
     })
     return res
+}
+
+
+export default {
+    getFilmesByStatus,
+    getRecentFilmImage,
+    getFilmListByScore
 }
