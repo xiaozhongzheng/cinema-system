@@ -101,7 +101,6 @@
         title="充值"
         :visible.sync="dialogVisible"
         width="30%"
-        :before-close="handleClose"
         @close="resetMoney"
       >
         <div>
@@ -182,13 +181,9 @@ export default {
     },
   },
   methods: {
-    getSingleUserById() {
+    async getSingleUserById() {
       const id = localStorage.getItem("id");
-      getUserById(id).then((res) => {
-        if (res.data.code === 1) {
-          this.user = res.data.data;
-        }
-      });
+      this.user = await getUserById(id)
     },
     handleCommand(command) {
       if (command == "out") {

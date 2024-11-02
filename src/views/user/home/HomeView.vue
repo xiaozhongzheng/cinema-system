@@ -5,7 +5,7 @@
 
     <el-carousel
       indicator-position="outside"
-      interval="3000"
+      :interval="3000"
       height="600px"
     >
       <el-carousel-item
@@ -169,10 +169,9 @@ export default {
     };
   },
   created() {
-    // this.getRecentImages();
-    this.getFilmes(2);
-    this.getFilmes(1);
-    this.getFilmListByScore();
+    // this.getFilmes(2);
+    // this.getFilmes(1);
+    // this.getFilmListByScore();
   },
   methods: {
     toShowAllFilm() {
