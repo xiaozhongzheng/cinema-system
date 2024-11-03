@@ -31,6 +31,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-vue": "^8.0.3",
+    "less": "^4.2.0",
+    "less-loader": "^7.3.0",
     "sockjs-client": "^1.5.0",
     "stompjs": "^2.3.3",
     "vue-template-compiler": "^2.6.14"

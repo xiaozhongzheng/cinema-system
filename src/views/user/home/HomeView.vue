@@ -21,84 +21,9 @@
     <div class="mainHome">
       <div class="left">
 
-        <div style="text-align: left;height: 30px;line-height: 30px;margin-bottom: 20px;">
-          <span style="color: rgb(231, 209, 121);font-size: 24px">正在热映（{{ hotFilmArr.length }}）</span>
+        <user-home :filmArr="hotFilmArr" :status="2"></user-home>
 
-          <el-link
-            type="primary"
-            style="float: right;"
-            @click="toShowAllFilm()"
-          >
-            全部
-            <i class="el-icon-arrow-right"></i>
-          </el-link>
-        </div>
-
-        <ul>
-          <li
-            v-for="(item,i) in hotFilmArr"
-            v-if="i<=7"
-            class="buyFilmes"
-          >
-            <img
-              :src="item.image"
-              width="100%"
-              height="246"
-              @click="toShowFilmDetail(item.id)"
-            >
-            <!-- <span style="position: absolute;bottom: 50px;left: 10px;color: white;font-weight: bold;">{{ item.title }}</span> -->
-            <div
-              class="buyBtn"
-              @click="toBuyFilm(item.id)"
-            >购票</div>
-          </li>
-          <div
-            v-if="hotFilmArr.length<7 "
-            style="display: flex;"
-          >
-            <li v-for="k in (8-hotFilmArr.length)%4">
-            </li>
-          </div>
-
-        </ul>
-
-        <div style="text-align: left;height: 30px;line-height: 30px;margin: 20px 0px">
-          <span style="color: rgb(231, 209, 121);font-size: 24px">即将上映（{{ upcomingArr.length }}）</span>
-
-          <el-link
-            type="primary"
-            style="float: right;"
-            @click="toShowAllFilm()"
-          >
-            全部
-            <i class="el-icon-arrow-right"></i>
-          </el-link>
-        </div>
-        <ul>
-          <li
-            v-for="(item,i) in upcomingArr"
-            v-if="i<=7"
-            class="buyFilmes"
-          >
-            <img
-              :src="item.image"
-              width="100%"
-              height="246"
-              @click="toShowFilmDetail(item.id)"
-            >
-            <span style="position: absolute;bottom: 50px;left: 10px;color: white;font-weight: bold;">{{ item.title }}</span>
-            <div
-              style=""
-              class="buyBtn"
-              @click="toBuyFilm(item.id)"
-            >购票</div>
-          </li>
-          <div v-if="upcomingArr.length<7 ">
-            <li v-for="k in (8-upcomingArr.length)%4">
-            </li>
-          </div>
-
-        </ul>
+        <user-home :filmArr="upcomingArr" :status="1"></user-home>
 
       </div>
 
@@ -160,6 +85,7 @@
 
 <script>
 import film from "@/api/film";
+import UserHome from '@/components/UserHome.vue';
 export default {
   data() {
     return {
@@ -173,6 +99,9 @@ export default {
       topFilmArr: [],
       num: 6,
     };
+  },
+  components: {
+    UserHome
   },
   created() {
     this.getFilmes();
@@ -223,6 +152,7 @@ export default {
   margin: auto;
   /* background-color: pink; */
 }
+
 ul {
   margin: 0;
   padding: 0;
@@ -237,44 +167,7 @@ li {
   /* float: left; */
   width: 65%;
 }
-.mainHome .left ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.mainHome .left ul li {
-  width: 177px;
-  position: relative;
-}
-.mainHome .left ul li img {
-  /* 去掉图片下面的空白 */
-  display: block;
-}
 
-/* .mainHome .left ul .buyFilmes {
-
-} */
-.mainHome .left ul .buyFilmes:hover {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transform: scale(1.1);
-}
-.mainHome .left ul li .buyBtn {
-  color: red;
-  width: 100%;
-  height: 35px;
-  line-height: 35px;
-  background-color: #fff;
-  border: 1px solid pink;
-  border-top: 0;
-}
-.mainHome .left ul li .buyBtn:hover {
-  background-color: red;
-  color: white;
-}
-.mainHome .left ul li:nth-child(n + 5) {
-  margin-top: 20px;
-}
 
 .mainHome .right {
   /* float: left; */
@@ -322,8 +215,5 @@ li {
   background-color: rgb(234, 238, 243);
   cursor: pointer;
 }
-.btn:hover {
-  background: red;
-  color: white !important;
-}
+
 </style>

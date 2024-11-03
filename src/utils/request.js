@@ -16,7 +16,6 @@ const urlList = ['/user', '/employee', '/admin']
 service.interceptors.request.use((config) => {
   if (!commonList.includes(config.url)) {
     // 非公共路径
-    console.log(config.baseURL)
     config.baseURL += urlList[localStorage.getItem('roleId')]
   }
   const token = localStorage.getItem('token')
