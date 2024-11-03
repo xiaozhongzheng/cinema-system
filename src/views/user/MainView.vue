@@ -128,7 +128,7 @@
       </el-dialog>
 
       <el-main>
-        <router-view></router-view>
+        <router-view v-if="showView"></router-view>
       </el-main>
     </el-container>
 
@@ -153,6 +153,8 @@ export default {
         discount: "",
       },
       roleId: "",
+      showView: false // 请求成功后展示router-view
+
     };
   },
   created() {
@@ -184,6 +186,7 @@ export default {
     async getSingleUserById() {
       const id = localStorage.getItem("id");
       this.user = await getUserById(id)
+      this.showView = true;
     },
     handleCommand(command) {
       if (command == "out") {

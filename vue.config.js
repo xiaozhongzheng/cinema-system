@@ -12,6 +12,9 @@ module.exports = defineConfig({
           '^/api': ''
         }
       }
+    },
+    client: { // 使页面不出现全屏报错
+      overlay: false
     }
   }
 })

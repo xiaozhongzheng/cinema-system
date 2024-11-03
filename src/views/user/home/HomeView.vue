@@ -175,10 +175,7 @@ export default {
     };
   },
   created() {
-    this.getFilmes(2);
-    this.getFilmes(1);
-
-    this.getFilmListByScore();
+    this.getFilmes();
   },
   methods: {
     toShowAllFilm() {
@@ -187,12 +184,15 @@ export default {
       });
     },
 
-    async getFilmListByScore() {
+    // async getFilmListByScore() {
+    // },
+    async getFilmes() {
+      // 获取正在上映的电影
+      this.hotFilmArr = await film.getFilmesByStatus(2);
+      // 获取即将上映的影片
+      this.upcomingArr = await film.getFilmesByStatus(1);
+      // 获取排名前几的影片（根据评分排名）
       this.topFilmArr = await film.getFilmListByScore(this.num);
-    },
-    async getFilmes(status) {
-      const res = await film.getFilmesByStatus(status);
-      status === 2 ? (this.hotFilmArr = res) : (this.upcomingArr = res);
     },
     toShowFilmDetail(id) {
       this.$router.push({

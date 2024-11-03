@@ -110,25 +110,22 @@ export default {
             method: "post",
             data,
           });
-
-          // 给token赋值
-          if (res) { // res不为null时再进行赋值
-            this.$message.success('登录成功')
-            const id = res.id;
-            localStorage.setItem(`token`, res.token);
-            // 判断角色类型（管理员，员工，用户）
-            const roleId = res.roleId;
-            localStorage.setItem("roleId", roleId);
-            localStorage.setItem("id", id);
-            localStorage.setItem("username", res.username);
-            let toPath = "/admin";
-            if (roleId == 0) {
-              toPath = "/user";
-            }
-            this.$router.push({
-              path: toPath,
-            });
+          
+          this.$message.success("登录成功");
+          const id = res.id;
+          localStorage.setItem(`token`, res.token);
+          // 判断角色类型（管理员，员工，用户）
+          const roleId = res.roleId;
+          localStorage.setItem("roleId", roleId);
+          localStorage.setItem("id", id);
+          localStorage.setItem("username", res.username);
+          let toPath = "/admin";
+          if (roleId == 0) {
+            toPath = "/user";
           }
+          this.$router.push({
+            path: toPath,
+          });
         }
       });
     },
