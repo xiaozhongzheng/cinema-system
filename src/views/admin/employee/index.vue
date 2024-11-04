@@ -63,6 +63,7 @@
     <el-dialog
       title="新增员工"
       :visible.sync="dialogFormVisible"
+      @close="resetForm"
     >
       <el-form
         :model="empForm"
@@ -98,7 +99,6 @@
           :label-width="formLabelWidth"
           prop="phone"
           style="width: 60%"
-
         >
           <el-input
             v-model="empForm.phone"
@@ -155,20 +155,32 @@
         width="300"
       >
 
-        <template slot-scope="scope" v-if="scope.row.username!='admin'">
-          <el-button @click="updateAdmin(scope.row)" style="width: 120px" type="success">
+        <template
+          slot-scope="scope"
+          v-if="scope.row.username!='admin'"
+        >
+          <el-button
+            @click="updateAdmin(scope.row)"
+            style="width: 100px"
+            type="success"
+            size="small"
+          >
             设为{{ scope.row.roleId == 2 ? '员工' : '管理员' }}
           </el-button>
 
           <el-button
             type="warning"
             @click="updateStatus(scope.row)"
+            size="small"
+
           >
             {{ scope.row.status == 0 ? '启用' : '禁用' }}
           </el-button>
           <el-button
             type="danger"
             @click="handleDelete(scope.row)"
+            size="small"
+
           >删除</el-button>
         </template>
       </el-table-column>
@@ -195,21 +207,27 @@
 </template>
 
 <script>
-
-import { updateEmployeeById } from "@/api/employee";
+// import {
+//   updateEmployeeById,
+//   pageQueryEmployee,
+//   addEmployee,
+//   deleteEmployee
+// } from "@/api/employee";
+/**
+ * 一次性导入所有方法
+ */
+import * as emp from '@/api/employee'
 export default {
   data() {
     return {
-      employeeArr: [
-       
-      ],
-      username: '',
+      employeeArr: [],
+      username: "",
       roleId: "",
       status: "",
       empForm: {
         username: "",
         password: "",
-        phone: ""
+        phone: "",
       },
       formLabelWidth: "120px",
       dialogFormVisible: false,
@@ -223,59 +241,40 @@ export default {
           { min: 3, max: 10, message: "密码的位数在3到10之间" },
         ],
         phone: [
-            { required: true, message: '请输入电话号码' },
-            {pattern: /^1[3-9]\d{9}$/,message:"手机号码格式不正确"}
-        ]
+          { required: true, message: "请输入电话号码" },
+          { pattern: /^1[3-9]\d{9}$/, message: "手机号码格式不正确" },
+        ],
       },
       pageNo: 1,
       pageSize: 10,
-      total: '',
+      total: 0,
     };
   },
   created() {
     this.pageQueryEmployee();
-    
   },
   methods: {
-    pageQueryEmployee() {
-      this.$http
-        .get("/employee/page", {
-          params: {
-            username: this.username,
-            roleId: this.roleId,
-            status: this.status,
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            this.employeeArr = res.data.data.records;
-            this.total = res.data.data.total;
-          }
-        });
+    async pageQueryEmployee() {
+      const res = await emp.pageQueryEmployee({
+        username: this.username,
+        roleId: this.roleId,
+        status: this.status,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
+      });
+      this.employeeArr = res.records;
+      this.total = res.total;
     },
     reset() {
-      (this.username = ""), 
-      (this.roleId = ""), 
-      (this.status = "");
+      (this.username = ""), (this.roleId = ""), (this.status = "");
       this.pageQueryEmployee();
     },
     addEmployee(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$http.post("/employee/save", this.empForm).then((res) => {
-            if (res.data.code === 1) {
-              this.$message.success("添加成功");
-              this.resetForm();
-              this.pageQueryEmployee();
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
-        } else {
-          return false;
-        }
+      this.$refs[formName].validate(async (valid) => {
+        await emp.addEmployee(this.empForm);
+        this.$message.success("添加员工成功");
+        this.resetForm();
+        this.pageQueryEmployee();
       });
     },
     resetForm() {
@@ -291,25 +290,20 @@ export default {
       this.pageQueryEmployee();
     },
     handleDelete(row) {
-      let name = (row.roleId == 2 ? '管理员' : '员工')
+      let name = row.roleId == 2 ? "管理员" : "员工";
       this.$confirm(`此操作将永久删除${name}, 是否继续?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
+        .then(async () => {
           const id = row.id;
-          this.$http.delete(`/employee/${id}`).then((res) => {
-            if (res.data.code === 1) {
-              this.$message({
+          await emp.deleteEmployee(id)
+          this.$message({
                 type: "success",
                 message: "删除成功",
               });
               this.pageQueryEmployee();
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
         })
         .catch(() => {
           this.$message({
@@ -319,9 +313,9 @@ export default {
         });
     },
     updateStatus(row) {
-      if(row.roleId == 2){
-        this.$message.error('不能禁用管理员账号')
-        return ;
+      if (row.roleId == 2) {
+        this.$message.error("不能禁用管理员账号");
+        return;
       }
       const data = {
         id: row.id,
@@ -329,32 +323,28 @@ export default {
       };
       this.handleUpdate(data);
     },
-    handleUpdate(data) {
-      updateEmployeeById(data).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("修改成功");
-          this.pageQueryEmployee();
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+    async handleUpdate(data) {
+      await emp.updateEmployeeById(data);
+      this.$message.success("修改状态成功");
+      this.pageQueryEmployee();
     },
     updateAdmin(row) {
-      if(row.status === 0){
-        this.$message.error('账号被禁用了，请联系管理员解禁');
-        return ;
+      if (row.status === 0) {
+        this.$message.error("账号被禁用了，请联系管理员解禁");
+        return;
       }
-      if (row.username == 'admin') {
+      if (row.username == "admin") {
         this.$message.error("不能将admin管理员修改为员工");
         return;
       }
-      let name1 = "",name2 = "";
-      if(row.roleId === 2){
-        name1 = '管理员';
-        name2 = '员工';
-      }else{
-        name1 = '员工';
-        name2 = '管理员'
+      let name1 = "",
+        name2 = "";
+      if (row.roleId === 2) {
+        name1 = "管理员";
+        name2 = "员工";
+      } else {
+        name1 = "员工";
+        name2 = "管理员";
       }
       this.$confirm(`此操作将${name1}设置为${name2}, 是否继续?`, "提示", {
         confirmButtonText: "确定",
@@ -364,7 +354,7 @@ export default {
         .then(() => {
           const data = {
             id: row.id,
-            roleId: row.roleId == 2 ? 1 : 2, 
+            roleId: row.roleId == 2 ? 1 : 2,
           };
           this.handleUpdate(data);
         })

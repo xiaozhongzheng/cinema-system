@@ -41,6 +41,7 @@
     <el-dialog
       :title="title"
       :visible.sync="dialogFormVisible"
+      @close="resetForm"
     >
       <el-form
         :model="screenForm"
@@ -160,7 +161,10 @@
         label="更新日期"
       >
       </el-table-column>
-      <el-table-column label="操作" v-if="roleId == 2">
+      <el-table-column
+        label="操作"
+        v-if="roleId == 2"
+      >
 
         <template slot-scope="scope">
           <el-button
@@ -197,24 +201,21 @@
   </div>
 </template>
   
-  <script>
-
+<script>
+import * as screen from "@/api/screen";
 export default {
- 
   data() {
     let validateValue = (rule, value, callback) => {
       if (value < 20) {
         callback(new Error("座位数不能低于20"));
-      }else if(value>200){
+      } else if (value > 200) {
         callback(new Error("座位数不能高于200"));
       } else {
-       
         callback();
       }
     };
     return {
-      screenArr: [
-      ],
+      screenArr: [],
       type: "", // 表示放映厅的类型
       screenForm: {
         id: "",
@@ -225,55 +226,43 @@ export default {
       },
       formLabelWidth: "120px",
       dialogFormVisible: false,
-      
+
       rules: {
         name: [{ required: true, message: "请填写名称" }],
         seatCount: [
           { required: true, message: "请填写座位数" },
           { type: "number", message: "座位数必须为整数" },
-          {pattern: /^[0-9]*$/,message: "只能输入正整数"},
-          { validator: validateValue},
-          
+          { pattern: /^[0-9]*$/, message: "只能输入正整数" },
+          { validator: validateValue },
         ],
         type: [{ required: true, message: "请选择类型", trigger: "change" }],
       },
       pageNo: 1,
-      pageSize: 5,
-      total: '',
+      pageSize: 10,
+      total: 0,
       handleType: "add", // 用于区分添加操作和修改操作
       title: "",
-      roleId: ""
+      roleId: "",
     };
   },
   created() {
-    this.pageQueryScreen()
-    this.roleId = localStorage.getItem('roleId')
+    this.pageQueryScreen();
+    this.roleId = localStorage.getItem("roleId");
   },
   methods: {
-    pageQueryScreen() {
-      this.$http
-        .get("/screen/page", {
-          params: {
-            type: this.type,
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            this.screenArr = res.data.data.records;
-            this.total = res.data.data.total;
-          }
-        });
+    async pageQueryScreen() {
+      const res = await screen.pageQueryScreen({
+        type: this.type,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
+      });
+      this.screenArr = res.records;
+      this.total = res.total;
     },
     showAddForm() {
       this.dialogFormVisible = true;
       this.handleType = "add";
       this.title = "新增放映厅";
-      // this.screenForm = {}
-      this.resetForm();
-      
-      
     },
     showUpdateForm(row) {
       this.dialogFormVisible = true;
@@ -281,17 +270,12 @@ export default {
       this.title = "修改放映厅";
       this.getScreenById(row.id);
       // this.screenForm = this.screenArr[0];
-
     },
-    getScreenById(id) {
-      this.$http.get(`/screen/single/${id}`).then((res) => {
-        if (res.data.code === 1) {
-          this.screenForm = res.data.data;
-        }
-      });
+    async getScreenById(id) {
+      const res = await screen.getScreenById(id);
+      this.screenForm = res;
     },
     handleAddOrUpdate(formName) {
-
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.handleType == "add") {
@@ -299,36 +283,23 @@ export default {
           } else {
             this.handleUpdate();
           }
-        } else {
-          return false;
         }
       });
     },
-    handleAdd() {
-      this.$http.post("/screen/save", this.screenForm).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("添加成功");
-          this.pageQueryScreen();
-          this.dialogFormVisible = false;
-
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+    async handleAdd() {
+      await screen.addScreen(this.screenForm);
+      this.$message.success("添加放映厅成功");
+      this.pageQueryScreen();
+      this.resetForm();
     },
-    handleUpdate() {
-      this.$http.put("/screen/edit", this.screenForm).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("修改成功");
-          this.pageQueryScreen();
-          this.dialogFormVisible = false;
-
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+    async handleUpdate() {
+      await screen.updateScreen(this.screenForm);
+      this.$message.success("修改放映厅成功");
+      this.pageQueryScreen();
+      this.resetForm();
     },
     resetForm() {
+      this.dialogFormVisible = false;
       this.$refs.screenForm.resetFields();
     },
     handleSizeChange(val) {
@@ -345,19 +316,14 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
+        .then(async () => {
           const id = row.id;
-          this.$http.delete(`/screen/${id}`).then((res) => {
-            if (res.data.code === 1) {
-              this.$message({
-                type: "success",
-                message: "删除成功",
-              });
-              this.pageQueryScreen();
-            } else {
-              this.$message.error(res.data.message);
-            }
+          await screen.deleteScreen(id);
+          this.$message({
+            type: "success",
+            message: "删除放映厅成功",
           });
+          this.pageQueryScreen();
         })
         .catch(() => {
           this.$message({
@@ -366,10 +332,10 @@ export default {
           });
         });
     },
-    reset(){
-      this.type = '';
+    reset() {
+      this.type = "";
       this.pageQueryScreen();
-    }
+    },
 
     // 底部
   },
@@ -378,7 +344,7 @@ export default {
   
   
   
-  <style scoped>
+<style scoped>
 </style>
   
   

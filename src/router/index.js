@@ -36,19 +36,19 @@ const routes = [
     children: [
       {
         path: '/admin/home',
-        component: () => import('../views/admin/home/HomeView.vue')
+        component: () => import('../views/admin/home')
       },
       {
         path: '/admin/employee',
-        component: () => import('../views/admin/employee/EmployeeView.vue')
+        component: () => import('../views/admin/employee')
       },
       {
         path: '/admin/screen',
-        component: () => import('../views/admin/screen/ScreenRoomView.vue')
+        component: () => import('../views/admin/screen')
       },
       {
         path: '/admin/film',
-        component: () => import('../views/admin/film/FilmView.vue')
+        component: () => import('../views/admin/film')
       },
       {
         path: '/admin/addFilm',

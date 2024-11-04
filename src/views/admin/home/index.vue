@@ -150,7 +150,6 @@
             v-model="pwdForm.newPassword"
             autocomplete="off"
             placeholder="请输入新密码"
-
           ></el-input>
         </el-form-item>
 
@@ -174,7 +173,7 @@
     
 <script>
 import { updateEmployeeById, getEmployeeById } from "@/api/employee";
-import {updatePassword} from '@/api/common'
+import { updatePassword } from "@/api/common";
 export default {
   data() {
     return {
@@ -197,8 +196,8 @@ export default {
         phone: "",
       },
       pwdForm: {
-        oldPassword: '',
-        newPassword: ''
+        oldPassword: "",
+        newPassword: "",
       },
       id: "",
       formLabelWidth: "120px",
@@ -224,7 +223,7 @@ export default {
           { required: true, message: "请输入新密码" },
           { min: 3, max: 10, message: "新密码的位数在3到10之间" },
         ],
-      }
+      },
       // 返回的底部
     };
     // data底部
@@ -233,7 +232,7 @@ export default {
   created() {
     this.currentTime = this.getCurrentDate();
     this.id = localStorage.getItem("id");
-    this.getById();
+    this.getEmployeeById();
   },
   mounted() {
     let that = this;
@@ -249,16 +248,9 @@ export default {
     }
   },
   methods: {
-    getById() {
-      // let path = "";
-      // if(localStorage.getItem('roleId') == 2){
-      //   path = "/employee"
-      // }
-      getEmployeeById(this.id).then((res) => {
-        if (res.data.code === 1) {
-          this.employee = res.data.data;
-        }
-      });
+    async getEmployeeById() {
+      const res = await getEmployeeById(this.id);
+      this.employee = res;
     },
     edit() {
       this.dialogFormVisible = true;
@@ -270,38 +262,31 @@ export default {
       };
     },
     editEmployee(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          updateEmployeeById(this.empForm).then((res) => {
-            if (res.data.code === 1) {
-              this.$message.success("修改成功");
-              this.dialogFormVisible = false;
-              this.getById();
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
-        } else {
-          return false;
+          await updateEmployeeById(this.empForm);
+          this.$message.success("修改成功");
+          this.dialogFormVisible = false;
+          this.getEmployeeById();
         }
       });
     },
 
-    passwordDialog(){
+    passwordDialog() {
       this.dialogPasswordVisible = true;
     },
-    updateEmployeePassword(formName){
+    updateEmployeePassword(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.pwdForm.roleId = localStorage.getItem('roleId');
-          updatePassword(this.pwdForm).then(res => {
-            if(res.data.code === 1){
-              this.$message.success('密码修改成功')
+          this.pwdForm.roleId = localStorage.getItem("roleId");
+          updatePassword(this.pwdForm).then((res) => {
+            if (res.data.code === 1) {
+              this.$message.success("密码修改成功");
               this.dialogPasswordVisible = false;
-            }else{
+            } else {
               this.$message.error(res.data.message);
             }
-          })
+          });
         } else {
           return false;
         }

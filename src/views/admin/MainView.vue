@@ -128,6 +128,7 @@
 
 
 <script>
+import {logout} from '@/api/user'
 export default {
   data() {
     return {
@@ -161,25 +162,23 @@ export default {
   },
 
   methods: {
-    logout() {
-      // 退出登录
-      this.$http.post(`/logout/${this.roleId}`).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("退出成功");
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          localStorage.removeItem("roleId");
-          this.$router.push("/login");
-        } else {
-          this.$message.error("退出失败");
-        }
-      });
+    // 实现退出登录
+    async logout(data) {
+      await logout(data)
+      // 清空本地存储的数据
+      this.$message.success('退出成功')
+      localStorage.clear();
+      this.$router.push("/login");
+      
     },
 
     handleCommand(command) {
       if (command === "out") {
         // 退出登录
-        this.logout();
+        this.logout({
+          roleId: localStorage.getItem('roleId'),
+          userId: localStorage.getItem('id')
+        });
         return;
       }
       if (this.$route.path != "/admin/home") {
