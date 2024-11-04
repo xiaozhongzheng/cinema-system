@@ -128,7 +128,7 @@
 
 
 <script>
-import {logout} from '@/api/user'
+import {logout} from '@/api/common'
 export default {
   data() {
     return {

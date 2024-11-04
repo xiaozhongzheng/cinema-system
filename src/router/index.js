@@ -61,7 +61,7 @@ const routes = [
       },
       {
         path: '/employee/schedule',
-        component: () => import('../views/admin/schedule/ScheduleView.vue')
+        component: () => import('../views/admin/schedule/index.vue')
       },
       {
         path: '/employee/query/allSchedule',

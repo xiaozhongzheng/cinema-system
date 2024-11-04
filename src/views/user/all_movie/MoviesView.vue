@@ -3,9 +3,7 @@
     id="movies"
     style="margin-top: 3%"
   >
-    <div
-      class="head"
-    >
+    <div class="head">
 
       <div style="height: 50%;height: 50px;padding-top: 20px;margin-left: 20px;">
         <div style="width: 120px;float: left">
@@ -114,16 +112,16 @@
     </div>
     <div v-else>
       <el-empty
-          :image-size="400"
-          description="这里空空如也"
-        ></el-empty>
+        :image-size="400"
+        description="这里空空如也"
+      ></el-empty>
     </div>
 
   </div>
 </template> 
 
 <script>
-import { pageQueryFilmes } from "@/api/film";
+import { pageQueryFilm } from "@/api/film";
 export default {
   data() {
     return {
@@ -155,24 +153,20 @@ export default {
   },
   created() {
     this.init();
-    this.title = localStorage.getItem('title');
+    this.title = localStorage.getItem("title");
     this.pageQueryFilmList();
-    
   },
   methods: {
-    pageQueryFilmList() {
-      pageQueryFilmes(
-        this.pageNo,
-        this.pageSize,
-        this.type,
-        this.region,
-        this.title
-      ).then((res) => {
-        if (res.data.code === 1) {
-          this.filmArr = res.data.data.records;
-          this.total = res.data.data.total;
-        }
+    async pageQueryFilmList() {
+      const res = await pageQueryFilm({
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
+        type: this.type,
+        region: this.region,
+        title: this.title,
       });
+      this.filmArr = res.records;
+      this.total = res.total;
     },
     init() {
       const a = new Array();
@@ -239,11 +233,11 @@ export default {
         },
       });
     },
-    handleCurrentChange(val){
+    handleCurrentChange(val) {
       this.pageNo = val;
       this.pageQueryFilmList();
       document.documentElement.scrollTop = 0;
-    }
+    },
   },
 };
 </script>

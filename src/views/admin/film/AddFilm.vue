@@ -101,7 +101,6 @@
       <div style="width: 100%;height: 60px">
         <el-form-item
           label="价格"
-          :label-width="formLabelWidth"
           style="width: 30%;float: left"
           prop="price"
         >
@@ -173,7 +172,8 @@
 </template>
 
 <script>
-import { getById } from "@/api/film";
+import { getFilmById, addFilm, updateFilm } from "@/api/film";
+import { upload } from "@/api/common";
 export default {
   data() {
     let validatePrice = (rule, value, callback) => {
@@ -188,7 +188,7 @@ export default {
     let validateDate = (rule, value, callback) => {
       if (new Date(value) < new Date()) {
         callback(new Error("上映日期不能早于当前日期"));
-      }else {
+      } else {
         callback();
       }
     };
@@ -217,10 +217,7 @@ export default {
         ],
         director: [{ required: true, message: "请填写导演姓名" }],
         actors: [{ required: true, message: "请填写主演姓名" }],
-        releaseDate: [
-          { required: true, message: "请选择上映日期" },
-          
-        ],
+        releaseDate: [{ required: true, message: "请选择上映日期" }],
         type: [{ required: true, message: "请选择影片类型" }],
         region: [{ required: true, message: "请选择上映地区" }],
         duration: [
@@ -253,12 +250,8 @@ export default {
     }
   },
   methods: {
-    getFilmById(id) {
-      getById(id).then((res) => {
-        if (res.data.code === 1) {
-          this.filmForm = res.data.data;
-        }
-      });
+    async getFilmById(id) {
+      this.filmForm = await getFilmById(id);
     },
     beforeAvatarUpload(file) {
       const formData = {
@@ -267,23 +260,11 @@ export default {
       this.upload(formData);
       return true;
     },
-    upload(formData) {
-      this.$http
-        .post("/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            // 上传成功后，显示图片
-            this.$message.success("上传成功");
-            this.filmForm.image = res.data.data;
-          }
-        })
-        .catch(() => {
-          this.$message.error("上传失败");
-        });
+    async upload(formData) {
+      const res = await upload(formData);
+      // 上传成功后，显示图片
+      this.$message.success("上传成功");
+      this.filmForm.image = res;
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -295,32 +276,19 @@ export default {
             // 修改操作
             this.updateFilm();
           }
-        } else {
-          console.log("error submit!!");
-          return false;
         }
       });
     },
-    addFilm() {
+    async addFilm() {
       const data = this.filmForm;
-      this.$http.post("/film/save", data).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("添加成功");
-          this.$router.push("/admin/film");
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+      await addFilm(data);
+      this.$message.success("添加影片成功");
+      this.$router.push("/admin/film");
     },
-    updateFilm() {
-      this.$http.put("/film/edit", this.filmForm).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("修改成功");
-          this.$router.push("/admin/film");
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+    async updateFilm() {
+      await updateFilm(this.filmForm);
+      this.$message.success("修改影片成功");
+      this.$router.push("/admin/film");
     },
     cancel() {
       this.$router.push("/admin/film");

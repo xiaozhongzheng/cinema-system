@@ -2,25 +2,19 @@ import axios from 'axios'
 
 import request from '@/utils/request'
 
-function getFilmesByStatus(status){
+export function getFilmesByStatus(status){
     return request({
         url: `/film/list/${status}`
     })
 }
 
 
-function getRecentFilmImage(num){
+export function getRecentFilmImage(num){
     let res = axios.get(`/film/recent/${num}`)
     return res
 }
 
-function getFilmListByScore(num){
-    // let res = axios.get(`/film/score`,{
-    //     params: {
-    //         num: num
-    //     }
-    // })
-    // return res
+export function getFilmListByScore(num){
     return request({
         url: '/film/score',
         params: {
@@ -30,25 +24,43 @@ function getFilmListByScore(num){
 }
 
 
-export function getById(id){
-    let res = axios.get(`film/single/${id}`)
-    return res
-}
-
-
-export function pageQueryFilmes(pageNo,pageSize,type,region,title){
-    let res = axios.get(`film/page`,{
-        params: {
-            pageNo: pageNo,
-            pageSize: pageSize,
-            type: type,
-            region: region,
-            title: title
-        }
+export function getFilmById(id){
+    return request({
+        url: `/film/single/${id}`,
+        method: 'get'
     })
-    return res
 }
 
+
+export function pageQueryFilm(params){
+    return request({
+        url: '/film/page',
+        method: 'get',
+        params
+    })
+}
+
+export function addFilm(data){
+    return request({
+        url: '/film/save',
+        method: 'post',
+        data
+    })
+}
+export function updateFilm(data){
+    return request({
+        url: '/film/edit',
+        method: 'put',
+        data
+    })
+}
+export function deleteFilmById(id){
+    return request({
+        url: `/film/${id}`,
+        method: 'delete',
+        
+    })
+}
 
 export default {
     getFilmesByStatus,

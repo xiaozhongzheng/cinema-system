@@ -1,9 +1,31 @@
 import axios from 'axios'
-
+import request from '@/utils/request'
 
 export function addSchedule(data){
-    let res = axios.post('/schedule/save',data)
-    return res;
+ 
+    return request({
+        url: '/schedule/save',
+        method: 'post',
+        data
+    })
+}
+
+export function updateSchedule(data){
+ 
+    return request({
+        url: '/schedule',
+        method: 'put',
+        data
+    })
+}
+
+export function pageQuerySchedule(params){
+ 
+    return request({
+        url: '/schedule/page',
+        method: 'get',
+        params
+    })
 }
 
 

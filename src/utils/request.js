@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import store from '@/store'
 import { Message } from 'element-ui'
-import { logout } from '@/api/user'
+import { logout } from '@/api/common'
 import router from '@/router'
 
 // 创建并初始化axios实例

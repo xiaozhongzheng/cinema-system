@@ -276,19 +276,13 @@ export default {
       this.dialogPasswordVisible = true;
     },
     updateEmployeePassword(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          this.pwdForm.roleId = localStorage.getItem("roleId");
-          updatePassword(this.pwdForm).then((res) => {
-            if (res.data.code === 1) {
-              this.$message.success("密码修改成功");
-              this.dialogPasswordVisible = false;
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
-        } else {
-          return false;
+          const roleId = localStorage.getItem("roleId")
+          this.pwdForm = {...this.pwdForm,roleId:roleId}
+          await updatePassword(this.pwdForm);
+          this.$message.success("密码修改成功");
+          this.dialogPasswordVisible = false;
         }
       });
     },

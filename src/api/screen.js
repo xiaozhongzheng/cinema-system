@@ -45,7 +45,9 @@ export function deleteScreen(id){
 }
 
 
-// export function getScreenRoomList(){
-//     let res = axios.get(`/screen/list`)
-//     return res
-// }
+export function getScreenRoomList(){
+    return request({
+        url: '/screen/list',
+        method: 'get'
+    })
+}
