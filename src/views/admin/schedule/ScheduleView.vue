@@ -38,7 +38,7 @@
 
       <el-button
         type="info"
-        @click="pageQueryAllSchedule"
+        @click="pageQuery"
         style="margin-left: 20px"
       >查询</el-button>
       <el-button
@@ -127,7 +127,7 @@
         :total="total"
       >
       </el-pagination>
-      
+
     </div>
 
   </div>
@@ -135,6 +135,7 @@
     
 <script>
 import { getScreenRoomList } from "@/api/screen";
+import {pageQuerySchedule} from '@/api/schedule'
 export default {
   data() {
     return {
@@ -150,50 +151,45 @@ export default {
     };
   },
   created() {
-    this.pageQueryAllSchedule();
+    this.pageQuerySchedule();
     this.getScreenRoomListName();
   },
   methods: {
-    pageQueryAllSchedule() {
-      this.$http
-        .get("/schedule/page", {
-          params: {
-            title: this.title,
-            language: this.language,
-            screenRoomName: this.screenRoomName,
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            this.scheduleArr = res.data.data.records;
-            this.total = res.data.data.total;
-          }
-        });
+    pageQuery(){
+      this.pageNo = 1;
+      this.pageQuerySchedule();
+    },
+    async pageQuerySchedule() {
+      const { records, total } = await pageQuerySchedule({
+        title: this.title,
+        language: this.language,
+        screenRoomName: this.screenRoomName,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
+      });
+      this.scheduleArr = records;
+      this.total = total;
     },
 
     handleSizeChange(val) {
       this.pageSize = val;
-      this.pageQueryAllSchedule();
+      this.pageQuerySchedule();
     },
     handleCurrentChange(val) {
       this.pageNo = val;
-      this.pageQueryAllSchedule();
+      this.pageQuerySchedule();
     },
 
     reset() {
-      this.screenRoomName  = "";
-      this.title = "";
+      this.screenRoomName = "";
+      this.title = "";  
       this.language = "";
-      this.pageQueryAllSchedule();
+      this.pageNo = 1;
+      this.pageSize = 10;
+      this.pageQuerySchedule();
     },
-    getScreenRoomListName() {
-      getScreenRoomList().then((res) => {
-        if (res.data.code === 1) {
-          this.screenRoomList = res.data.data;
-        }
-      });
+    async getScreenRoomListName() {
+      this.screenRoomList = await getScreenRoomList()
     },
 
     // 底部
@@ -204,7 +200,6 @@ export default {
     
     
 <style scoped>
-
 </style>
     
     

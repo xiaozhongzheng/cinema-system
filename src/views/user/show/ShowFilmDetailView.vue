@@ -208,7 +208,7 @@
 
 <script>
 import { addComment, getCommentByFilmId } from "@/api/comment";
-import { getById } from "@/api/film";
+import { getFilmById } from "@/api/film";
 
 export default {
   data() {
@@ -249,46 +249,31 @@ export default {
   },
   created() {
     this.id = this.$route.query.filmId; // 获取影片的id
-    this.getSingleFilmById();
-    this.getUserContentByFilmId();
+    this.getFilmAndComment();
   },
   methods: {
-    getSingleFilmById() {
-      getById(this.id).then((res) => {
-        if (res.data.code === 1) {
-          this.film = res.data.data;
-        }
-      });
+    async getFilmAndComment() {
+      this.film = await getFilmById(this.id);
+      this.userList = await getCommentByFilmId(this.id);
     },
-    saveComment() {
+    async saveComment() {
       if (this.value == 0) {
         this.$message.error("请选择评分");
         return;
       }
       this.commentForm.score = this.value;
-      this.commentForm.filmId = this.id;
-      addComment(this.commentForm).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("评价成功");
-          this.cancel();
-          this.getUserContentByFilmId();
-          this.getSingleFilmById();
-        }
-      });
+      this.commentForm.filmId = this.id;  
+      await addComment(this.commentForm);
+      this.$message.success("评价成功");
+      this.cancel();
+      this.getFilmAndComment();
     },
     cancel() {
       this.value = 0;
       this.commentForm.content = "";
       this.dialogVisible = false;
     },
-    getUserContentByFilmId() {
-      getCommentByFilmId(this.id).then((res) => {
-        if (res.data.code === 1) {
-          this.userList = res.data.data;
-          console.log(this.userList);
-        }
-      });
-    },
+
     toBuyFilm() {
       this.$router.push({
         name: "buy",

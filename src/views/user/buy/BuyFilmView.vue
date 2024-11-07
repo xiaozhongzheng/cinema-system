@@ -228,7 +228,8 @@
   
   <script>
 import { getScheduleDateList, getScheduleListByDate } from "@/api/schedule";
-import { getById } from "@/api/film";
+import { getFilmById } from "@/api/film";
+import { addComment } from "@/api/comment";
 export default {
   data() {
     return {
@@ -277,27 +278,20 @@ export default {
     // this.handleSelect(this.activeIndex)
   },
   methods: {
-    getSingleFilmById() {
-      getById(this.id).then((res) => {
-        if (res.data.code === 1) {
-          this.film = res.data.data;
-        }
-      });
+    async getSingleFilmById() {
+      this.film = await getFilmById(this.id);
     },
-    addComment() {
+    async addComment() {
       if (this.value == 0) {
         this.$message.error("请选择评分");
         return;
       }
       this.commentForm.score = this.value;
       this.commentForm.filmId = this.id;
-      this.$http.post("/comment/save", this.commentForm).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("评价成功");
-          this.cancel();
-          this.getSingleFilmById();
-        }
-      });
+      await addComment(this.commentForm);
+      this.$message.success("评价成功");
+      this.cancel();
+      this.getSingleFilmById();
     },
     cancel() {
       this.value = 0;
@@ -313,39 +307,38 @@ export default {
         },
       });
     },
-    getDateArr() {
-      getScheduleDateList(this.id).then((res) => {
-        if (res.data.code === 1) {
-          this.filmDateList = res.data.data;
-          if (this.filmDateList.length != 0) {
-            this.activeIndex = this.filmDateList[0]; // 默认选中数组中的第一个日期
-            this.handleSelect(this.filmDateList[0]);
-          }
-        }
-      });
+    async getDateArr() {
+      this.filmDateList = await getScheduleDateList(this.id);
+      if (this.filmDateList.length != 0) {
+        this.activeIndex = this.filmDateList[0]; // 默认选中数组中的第一个日期
+        this.handleSelect(this.filmDateList[0]);
+      }
     },
     getHandleDate(time) {
       return new Date(time[0], time[1] - 1, time[2]).toLocaleDateString();
     },
-    handleSelect(scheduleDate) {
+    async handleSelect(scheduleDate) {
       let selectDate = this.getHandleDate(scheduleDate);
       // 日期值
-      getScheduleListByDate(selectDate, this.id).then((res) => {
-        if (res.data.code === 1) {
-          this.scheduleList = res.data.data;
-          this.isDisableButton();
-        }
-      });
+      this.scheduleList = await getScheduleListByDate(selectDate, this.id)
+      this.isDisableButton();
+
     },
     isDisableButton() {
       let now = new Date();
-      for (let k in this.scheduleList) {
-        let startTime = new Date(this.scheduleList[k].startTime);
-        if (now >= startTime) {
+      // for (let k in this.scheduleList) {
+      //   let startTime = new Date(this.scheduleList[k].startTime);
+      //   if (now >= startTime) {
+      //     // 当前时间比开始时间晚，则禁用按钮
+      //     this.scheduleList[k].status = 1;
+      //   }
+      // }
+      this.scheduleList.forEach(item => {
+        if (now >= item.startTime) {
           // 当前时间比开始时间晚，则禁用按钮
           this.scheduleList[k].status = 1;
         }
-      }
+      })
     },
     getHandleTime(time) {
       let d = new Date(time);

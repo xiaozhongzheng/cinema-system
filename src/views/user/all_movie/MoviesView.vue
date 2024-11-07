@@ -170,22 +170,19 @@ export default {
     },
     init() {
       const a = new Array();
-      for (let k in this.typeArr) {
-        const form = {
-          value: this.typeArr[k],
+      this.typeArr.forEach((item) => {
+        a.push({
+          value: item,
           isSelect: false,
-        };
-        a.push(form);
-      }
-
+        });
+      });
       const b = new Array();
-      for (let k in this.regionArr) {
-        const form = {
-          value: this.regionArr[k],
+      this.regionArr.forEach(item => {
+        b.push({
+          value: item,
           isSelect: false,
-        };
-        b.push(form);
-      }
+        })
+      })
       this.typeObjArr = a;
       this.regionObjArr = b;
     },
@@ -203,9 +200,9 @@ export default {
       this.pageQueryFilmList();
     },
     clearTypeArr() {
-      for (let k in this.typeObjArr) {
-        this.typeObjArr[k].isSelect = false;
-      }
+      this.typeObjArr.forEach(item => {
+        item.isSelect = false;
+      })
     },
     updateRegionColor(index) {
       this.clearRegionArr();

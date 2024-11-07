@@ -40,7 +40,7 @@
       <el-button
         type="info"
         style="margin-left: 20px"
-        @click="pageQueryFilm"
+        @click="pageQuery"
       >查询</el-button>
       <el-button
         type="info"
@@ -146,6 +146,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :page-sizes="[2, 4, 10, 20]"
+        :current-page.sync="pageNo"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -178,7 +179,7 @@ export default {
       title: "",
       type: "",
       region: "",
-      total: 3,
+      total: 0,
       typeArr: this.global.filmTypeArr,
       regionArr: this.global.regionArr,
       dialogFormVisible: false,
@@ -187,19 +188,25 @@ export default {
     };
   },
   created() {
-    this.pageQueryFilm();
     this.roleId = localStorage.getItem("roleId");
+    this.pageQueryFilm();
   },
   methods: {
+    pageQuery(){
+      this.pageNo = 1;
+      this.pageSize = 4;
+      this.pageQueryFilm();
+    },
     reset() {
       this.title = "";
       this.pageNo = 1;
-      this.pageSize = 10;
+      this.pageSize = 4;
       this.type = "";
       this.region = "";
       this.pageQueryFilm();
     },
     async pageQueryFilm() {
+      console.log(this.pageNo);
       const params = {
         pageNo: this.pageNo,
         pageSize: this.pageSize,
@@ -207,7 +214,6 @@ export default {
         type: this.type,
         region: this.region,
       };
-
       const res = await pageQueryFilm(params);
       this.filmArr = res.records;
       this.total = res.total;
@@ -230,7 +236,6 @@ export default {
       })
         .then(async () => {
           const id = row.id;
-
           await deleteFilmById(id);
           this.$message({
             type: "success",

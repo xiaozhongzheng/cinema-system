@@ -1,18 +1,21 @@
 import axios from 'axios'
-
+import request from '@/utils/request'
 
 export function addComment(data){
-    let res = axios.post(`/comment/save`, data)
-    
-    return res;
+    return request({
+        url: `/comment/save`,
+        method: 'post',
+        data
+    })
 }
 
+
 export function getCommentByFilmId(id){
-    let res = axios.get(`/comment/get`, {
+    return request({
+        url: '/comment/get',
+        method: 'get',
         params: {
             filmId: id
         }
     })
-    
-    return res;
 }

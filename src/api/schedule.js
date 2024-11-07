@@ -29,22 +29,34 @@ export function pageQuerySchedule(params){
 }
 
 
+
+
 export function getScheduleDateList(id){
-    let res = axios.get('/schedule/list/showDate',{
+    return request({
+        url: '/schedule/list/showDate',
+        method: 'get',
         params: {
             filmId: id
         }
     })
-    return res;
 }
 
 
 export function getScheduleListByDate(date,id){
-    let res = axios.get('/schedule/list/showBuy',{
+    // let res = axios.get('/schedule/list/showBuy',{
+    //     params: {
+    //         time: date,
+    //         filmId: id
+    //     }
+    // })
+    // return res;
+
+    return request({
+        url: '/schedule/list/showBuy',
+        method: 'get',
         params: {
             time: date,
             filmId: id
         }
     })
-    return res;
 }
