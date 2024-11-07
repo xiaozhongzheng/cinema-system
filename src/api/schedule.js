@@ -43,14 +43,6 @@ export function getScheduleDateList(id){
 
 
 export function getScheduleListByDate(date,id){
-    // let res = axios.get('/schedule/list/showBuy',{
-    //     params: {
-    //         time: date,
-    //         filmId: id
-    //     }
-    // })
-    // return res;
-
     return request({
         url: '/schedule/list/showBuy',
         method: 'get',

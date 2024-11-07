@@ -16,9 +16,7 @@
       >
 
       </el-input>
-      
 
-    
       <el-button
         type="info"
         @click="pageQueryOrders"
@@ -44,7 +42,10 @@
       >
       </el-table-column>
 
-      <el-table-column label="图片" width="200">
+      <el-table-column
+        label="图片"
+        width="200"
+      >
         <template slot-scope="scope">
           <img
             :src="scope.row.image"
@@ -63,8 +64,8 @@
         label="金额"
         width="100"
       >
-      <template slot-scope="scope">
-            {{ scope.row.amount }} 元
+        <template slot-scope="scope">
+          {{ scope.row.amount }} 元
         </template>
       </el-table-column>
       <el-table-column
@@ -109,51 +110,53 @@
   </div>
 </template>
       
-  <script>
-
+<script>
+import { pageQueryOrders } from "@/api/orders";
 export default {
   data() {
     return {
       ordersArr: [
         {
-            name: '',
-            image: '',
-            username: '',
-            amount: '',
-            status: '',
-            startTime: '',
-            payTime: ''
-        }
+          name: "",
+          image: "",
+          username: "",
+          amount: "",
+          status: "",
+          startTime: "",
+          payTime: "",
+        },
       ],
       name: "", // 影片名
       username: "",
-      
+
       pageNo: 1,
       pageSize: 10,
       total: "",
-     
     };
   },
   created() {
     this.pageQueryOrders();
   },
   methods: {
-    pageQueryOrders() {
-      this.$http
-        .get("/orders/page", {
-          params: {
-            name: this.name,
-            username: this.username,
-            pageNo: this.pageNo,
-            pageSize: this.pageSize,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            this.ordersArr = res.data.data.records;
-            this.total = res.data.data.total;
-          }
-        });
+    async pageQueryOrders() {
+      // this.$http
+      //   .get("/orders/page", {
+      //     params: {},
+      //   })
+      //   .then((res) => {
+      //     if (res.data.code === 1) {
+      //        = res.data.data.records;
+      //        = res.data.data.total;
+      //     }
+      //   });
+      const { records, total } = await pageQueryOrders({
+        name: this.name,
+        username: this.username,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize
+      });
+      this.ordersArr = records
+      this.total = total
     },
 
     handleSizeChange(val) {
@@ -166,11 +169,10 @@ export default {
     },
 
     reset() {
-      this.name = '';
-      this.username = '';
+      this.name = "";
+      this.username = "";
       this.pageQueryOrders();
     },
-  
 
     // 底部
   },
