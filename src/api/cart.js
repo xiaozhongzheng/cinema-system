@@ -7,3 +7,19 @@ export function addCart(data){
         data
     })
 }
+
+export function getCartes(){
+    return request({
+        url: `/cart/list`,
+        method: 'get',
+        
+    })
+}
+
+export function deleteCartById(id){
+    return request({
+        url: `/cart/${id}`,
+        method: 'delete',
+        
+    })
+}

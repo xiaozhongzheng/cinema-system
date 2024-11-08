@@ -234,8 +234,8 @@ export default {
   created() {
     this.id = this.$route.query.id; // 获取排片的id
     this.userId = localStorage.getItem("id"); // 获取用户的id
-    this.path += `/${this.id}`;
-    this.init(); // 获取影片排片信息和座位数
+    this.path += `/${this.id}`; // 用于将排片id传到服务器端
+    this.init(); // 初始化影片排片信息和座位数
   },
 
   methods: {
@@ -322,7 +322,8 @@ export default {
       this.initSeats(); // 初始化座位数
       this.updateSeatArr();
     },
-    async updateSeatArr(){
+    // 获取用户已选的座位并进行状态更新
+    async updateSeatArr(){ 
       this.seatArr = await getSeatsByScheduleId({
         scheduleId: this.id,
       });
@@ -347,18 +348,6 @@ export default {
         phone: this.phone,
         startTime: film.startTime,
       };
-      // this.toBuyFilm();
-      // this.$http.post("/cart/save", cart).then((res) => {
-      //   if (res.data.code === 1) {
-      //     this.$message.success("加入购物车成功");
-      //     this.getSeatsByScheduleId();
-      //     setTimeout(() => {
-      //       this.$message.info("请在15分钟内完成付款哦");
-      //     }, 1000); // 延迟1秒刷新页面
-      //   } else {
-      //     this.$message.error(res.data.message);
-      //   }
-      // });
       await addCart(cart);
       this.$message.success("加入购物车成功");
       this.updateSeatArr();
@@ -366,15 +355,7 @@ export default {
         this.$message.info("请在15分钟内完成付款哦");
       }, 1000); // 延迟1秒刷新页面
     },
-    toBuyFilm() {
-      this.$router.push({
-        name: "buy",
-        query: {
-          filmId: this.filmSchedule.filmId,
-        },
-      });
-    },
-
+    // 用户选择座位时执行该方法
     selectSeat(rowIndex, seatIndex) {
       this.seats[rowIndex][seatIndex].status = 1;
       const seat = {
@@ -385,7 +366,7 @@ export default {
       };
       this.sendMessage(JSON.stringify(seat)); // 传递json格式的字符串
     },
-
+    // 用户取消座位时执行该方法
     async cancelSeat(rowIndex, seatIndex) {
       this.seats[rowIndex][seatIndex].status = 0;
       await deleteSeatById({

@@ -9,10 +9,7 @@
           @change="handleCheckedCitiesChange"
         >
           <div
-            style="width: 100%;height: 120px;
-          background-color: #fff;
-          border: 1px solid rgb(234, 238, 243);
-          font-size: 20px"
+            class="cartStyle"
             v-for="cart in cartArr"
           >
 
@@ -29,10 +26,10 @@
             <img
               :src="cart.image"
               height="100%"
-              style="vertical-align: middle;float: left"
+              style="vertical-align: middle;"
             >
             <div
-              style="width: 60%;height: 90%;float: left;margin: 0 20px;"
+              style="width: 55%;height: 90%;margin: 0 20px;"
               class="main"
             >
               <p style="font-weight: bold;margin-top:5px">{{ cart.title }}</p>
@@ -54,14 +51,13 @@
               </span>
 
             </div>
-            <div style="width: 20%;height: 100%;float: left;line-height: 120px;color: red">
+            <div style="width: 20%;height: 100%;line-height: 120px;color: red">
               <span style="width: 100px;display: inline-block">
                 ￥ {{ cart.price }}
               </span>
               <el-button
                 type="danger"
                 icon="el-icon-delete"
-                style="margin-left: 10%;"
                 @click="deleteCartById(cart.id)"
               ></el-button>
             </div>
@@ -110,7 +106,8 @@
 
 <script>
 import { getUserById } from "@/api/user";
-
+import { getCartes, deleteCartById } from "@/api/cart";
+import { saveOrders } from "@/api/orders";
 export default {
   data() {
     return {
@@ -143,20 +140,13 @@ export default {
     this.getUserDiscount();
   },
   methods: {
-    getUserDiscount() {
+    async getUserDiscount() {
       const id = localStorage.getItem("id");
-      getUserById(id).then((res) => {
-        if (res.data.code === 1) {
-          this.discount = res.data.data.discount;
-        }
-      });
+      const res = await getUserById(id);
+      this.discount = res.discount;
     },
-    getCartesByUserId() {
-      this.$http.get("/cart/list").then((res) => {
-        if (res.data.code === 1) {
-          this.cartArr = res.data.data;
-        }
-      });
+    async getCartesByUserId() {
+      this.cartArr = await getCartes();
     },
     handleCheckAllChange(val) {
       // val 为bool值
@@ -183,32 +173,31 @@ export default {
     },
     computeCartCountPrice(arr) {
       let count = 0;
-      for (let k in arr) {
-        count += arr[k].price;
-      }
+      arr.forEach((item) => {
+        count += item.price;
+      });
       return count;
     },
-    deleteCartById(id) {
-      this.$http.delete(`/cart/${id}`).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("删除成功");
-          this.getCartesByUserId();
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+    async deleteCartById(id) {
+      await deleteCartById(id);
+      this.$message.success("删除成功");
+      this.getCartesByUserId();
     },
     open() {
       if (this.countPrice == 0) {
         this.$message.error("结算的金额不能是0");
         return;
       }
-      
-      this.$confirm(`请您确认订单的金额为${this.discountPrice}元, 是否支付?`, "提示", {
-        confirmButtonText: "确认支付",
-        cancelButtonText: "取消支付",
-        type: "warning",
-      })
+
+      this.$confirm(
+        `请您确认订单的金额为${this.discountPrice}元, 是否支付?`,
+        "提示",
+        {
+          confirmButtonText: "确认支付",
+          cancelButtonText: "取消支付",
+          type: "warning",
+        }
+      )
         .then(() => {
           this.saveOrders();
         })
@@ -216,16 +205,19 @@ export default {
           this.$message.info("取消支付");
         });
     },
-    saveOrders() {
+    async saveOrders() {
       this.handleOrdersArr();
-      this.$http.post("/order/save", this.ordersArr).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("支付成功");
-          this.getCartesByUserId();
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+      // this.$http.post("/order/save", this.ordersArr).then((res) => {
+      //   if (res.data.code === 1) {
+      //     this.$message.success("支付成功");
+      //     this.getCartesByUserId();
+      //   } else {
+      //     this.$message.error(res.data.message);
+      //   }
+      // });
+      await saveOrders(this.ordersArr);
+      this.$message.success("支付成功");
+      this.getCartesByUserId();
     },
     handleOrdersArr() {
       let arr = [],
@@ -239,7 +231,7 @@ export default {
           scheduleId: cart.scheduleId,
           seatNumber: cart.seatNumber,
           amount: cart.price,
-          startTime: cart.startTime
+          startTime: cart.startTime,
         };
         arr.push(orders);
       }
@@ -261,5 +253,13 @@ p {
 .main span {
   font-size: 14px;
   /* color: rgb(194, 194, 196); */
+}
+.cartStyle {
+  width: 100%;
+  height: 120px;
+  background-color: #fff;
+  border: 1px solid rgb(234, 238, 243);
+  font-size: 20px;
+  display: flex;
 }
 </style>
