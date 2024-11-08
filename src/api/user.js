@@ -18,3 +18,10 @@ export function updateUserById(id,data) {
     })
 }
 
+export function recharge(data) {
+    return request({
+        url: `/user/recharge`,
+        method: 'put',
+        data
+    })
+}

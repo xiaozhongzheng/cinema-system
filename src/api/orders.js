@@ -15,3 +15,10 @@ export function saveOrders(data){
         data
     })
 }
+
+export function getOrdersList(){
+    return request({
+        url: '/orders/list',
+        method: 'get',
+    })
+}

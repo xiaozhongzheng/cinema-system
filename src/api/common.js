@@ -10,8 +10,6 @@ export function logout(data) {
 }
 
 export function updatePassword(data) {
-    // let res = axios.put(`/password`, data)
-    // return res;
     return request({
         url: `/password`,
         method: 'put',

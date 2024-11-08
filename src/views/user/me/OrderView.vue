@@ -9,21 +9,17 @@
         v-if="orderArr.length!=0"
       >
         <div
-          style="width: 100%;height: 120px;
-            background-color: #fff;
-            border: 1px solid rgb(234, 238, 243);
-            margin-bottom: 20px;
-            font-size: 20px"
+          class="ordersStyle"
           v-for="order in orderArr"
         >
 
           <img
             :src="order.image"
             height="100%"
-            style="vertical-align: middle;float: left"
+            style="vertical-align: middle"
           >
           <div
-            style="width: 60%;height: 90%;float: left;margin: 0 20px;"
+            style="width: 55%;height: 90%;margin: 0 20px;"
             class="main"
           >
             <p>{{ order.name }}</p>
@@ -45,7 +41,7 @@
             </span>
 
           </div>
-          <div style="width: 20%;height: 100%;float: left;line-height: 120px;">
+          <div style="height: 100%;line-height: 120px;">
             <span style="width: 100px;display: inline-block">
               {{ order.amount }} 元
             </span>
@@ -67,7 +63,8 @@
 
 </template>
   
-  <script>
+<script>
+import { getOrdersList } from "@/api/orders";
 export default {
   data() {
     return {
@@ -83,9 +80,7 @@ export default {
       //     amount: 1220,
       //     scheduleId: 2,
       //   },
-     
-     
-      
+
       //   },
       // ],
       orderArr: "",
@@ -95,12 +90,8 @@ export default {
     this.getOrdersByUserId();
   },
   methods: {
-    getOrdersByUserId() {
-      this.$http.get("/order/list").then((res) => {
-        if (res.data.code === 1) {
-          this.orderArr = res.data.data;
-        }
-      });
+    async getOrdersByUserId() {
+      this.orderArr = await getOrdersList();
     },
   },
 };
@@ -118,5 +109,15 @@ p {
 .main span {
   font-size: 14px;
   color: rgb(194, 194, 196);
+}
+.ordersStyle {
+  display: flex;
+
+  width: 100%;
+  height: 120px;
+  background-color: #fff;
+  border: 1px solid rgb(234, 238, 243);
+  margin-bottom: 20px;
+  font-size: 20px;
 }
 </style>

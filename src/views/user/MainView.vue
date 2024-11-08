@@ -136,8 +136,8 @@
 </template>
 
 <script>
-import { getUserById } from "@/api/user";
-import {logout} from '@/api/common'
+import { getUserById, recharge } from "@/api/user";
+import { logout } from "@/api/common";
 export default {
   data() {
     return {
@@ -153,8 +153,7 @@ export default {
         discount: "",
       },
       roleId: "",
-      showView: false // 请求成功后展示router-view
-
+      showView: false, // 请求成功后展示router-view
     };
   },
   created() {
@@ -180,15 +179,15 @@ export default {
   methods: {
     async getSingleUserById() {
       const id = localStorage.getItem("id");
-      this.user = await getUserById(id)
+      this.user = await getUserById(id);
       this.showView = true;
     },
     handleCommand(command) {
       if (command == "out") {
         // 用户退出登录
         this.logout({
-          roleId: localStorage.getItem('roleId'),
-          userId: localStorage.getItem('id')
+          roleId: localStorage.getItem("roleId"),
+          userId: localStorage.getItem("id"),
         });
         return;
       }
@@ -199,15 +198,14 @@ export default {
     },
     // 实现退出登录
     async logout(data) {
-      await logout(data)
+      await logout(data);
       // 清空本地存储的数据
-      this.$message.success('退出成功')
+      this.$message.success("退出成功");
       localStorage.clear();
       this.$router.push("/login");
-      
     },
 
-    recharge() {
+    async recharge() {
       const m = this.money;
       let userDiscount = this.user.discount; // 折扣
       let discount = 1;
@@ -221,16 +219,12 @@ export default {
       if (discount < userDiscount) {
         userDiscount = discount;
       }
-      const form = {
+      await recharge({
         money: this.money,
         discount: discount,
-      };
-      this.$http.put("/recharge", form).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("充值成功");
-          this.resetMoney();
-        }
       });
+      this.$message.success("充值成功");
+      this.resetMoney();
     },
     resetMoney() {
       this.money = "";
@@ -255,7 +249,6 @@ export default {
 <style scoped>
 * {
   box-sizing: border-box;
-  
 }
 #main {
   width: 100vw;
@@ -272,7 +265,7 @@ export default {
   top: 0;
   line-height: 60px;
   z-index: 10;
-  background-color: #FFF; 
+  background-color: #fff;
   border-bottom: 1px solid pink;
 }
 .el-menu-demo {

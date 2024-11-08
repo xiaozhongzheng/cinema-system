@@ -51,7 +51,7 @@
               </span>
 
             </div>
-            <div style="width: 20%;height: 100%;line-height: 120px;color: red">
+            <div style="height: 100%;line-height: 120px;color: red">
               <span style="width: 100px;display: inline-block">
                 ￥ {{ cart.price }}
               </span>
@@ -128,11 +128,10 @@ export default {
         // },
       ],
       // cartArr: "",
-      countPrice: 0,
+      countPrice: 0, // 总价格
       selectCartArr: [],
-      ordersArr: [],
       discount: 1,
-      discountPrice: 0,
+      discountPrice: 0, // 折扣后的总价格
     };
   },
   created() {
@@ -206,38 +205,29 @@ export default {
         });
     },
     async saveOrders() {
-      this.handleOrdersArr();
-      // this.$http.post("/order/save", this.ordersArr).then((res) => {
-      //   if (res.data.code === 1) {
-      //     this.$message.success("支付成功");
-      //     this.getCartesByUserId();
-      //   } else {
-      //     this.$message.error(res.data.message);
-      //   }
-      // });
-      await saveOrders(this.ordersArr);
+      const ordersArr = this.getHandleOrdersArr;
+      await saveOrders(ordersArr);
       this.$message.success("支付成功");
       this.getCartesByUserId();
     },
-    handleOrdersArr() {
-      let arr = [],
-        cartArr = this.selectCartArr;
-      for (let k in cartArr) {
-        let cart = cartArr[k];
-        let orders = {
-          cartId: cart.id,
-          name: cart.title,
-          image: cart.image,
-          scheduleId: cart.scheduleId,
-          seatNumber: cart.seatNumber,
-          amount: cart.price,
-          startTime: cart.startTime,
-        };
-        arr.push(orders);
-      }
-      this.ordersArr = arr;
-    },
   },
+  computed: {
+    // 将购物车的数据转变为订单的数据
+    getHandleOrdersArr() {
+      const arr = this.selectCartArr.map(item => {
+        return {
+          cartId: item.id,
+          name: item.title,
+          image: item.image,
+          scheduleId: item.scheduleId,
+          seatNumber: item.seatNumber,
+          amount: item.price,
+          startTime: item.startTime,
+        }
+      })
+      return arr;
+    },
+  }
 };
 </script>
 

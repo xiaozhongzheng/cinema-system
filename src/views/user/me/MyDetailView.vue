@@ -67,7 +67,10 @@
         prop="image"
         style="width: 30%;position: absolute;right: 20%;top: 0"
       >
-        <upload-image show-type="user" v-model="userForm.image"></upload-image>
+        <upload-image
+          show-type="user"
+          v-model="userForm.image"
+        ></upload-image>
       </el-form-item>
 
       <el-form-item>
@@ -212,19 +215,12 @@ export default {
       this.dialogPasswordVisible = true;
     },
     updateEmployeePassword(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
           this.pwdForm.roleId = localStorage.getItem("roleId");
-          updatePassword(this.pwdForm).then((res) => {
-            if (res.data.code === 1) {
-              this.$message.success("密码修改成功");
-              this.dialogPasswordVisible = false;
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
-        } else {
-          return false;
+          await updatePassword(this.pwdForm);
+          this.$message.success("密码修改成功");
+          this.dialogPasswordVisible = false;
         }
       });
     },
