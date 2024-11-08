@@ -67,23 +67,7 @@
         prop="image"
         style="width: 30%;position: absolute;right: 20%;top: 0"
       >
-        <el-upload
-          class="avatar-uploader"
-          :show-file-list="false"
-          :before-upload="beforeAvatarUpload"
-        >
-          <img
-            v-if="userForm.image"
-            :src="userForm.image"
-            class="avatar"
-          >
-          <i
-            v-else
-            class="el-icon-plus avatar-uploader-icon"
-          ></i>
-
-        </el-upload>
-
+        <upload-image show-type="user" v-model="userForm.image"></upload-image>
       </el-form-item>
 
       <el-form-item>
@@ -155,10 +139,11 @@
 </template>
 
 <script>
-import { getUserById } from "@/api/user";
+import { getUserById, updateUserById } from "@/api/user";
 import { updatePassword } from "@/api/common";
-
+import UploadImage from "@/components/UploadImage.vue";
 export default {
+  components: { UploadImage },
   data() {
     return {
       userId: "",
@@ -200,69 +185,28 @@ export default {
   },
   created() {
     this.userId = localStorage.getItem("id");
-    this.getSingleUserById(); // 获取用户的基本信息
+    this.getSingleUser(); // 获取用户的基本信息
   },
   methods: {
-    getSingleUserById() {
-      getUserById(this.userId).then((res) => {
-        if (res.data.code === 1) {
-          this.userForm = res.data.data;
-        }
-      });
+    async getSingleUser() {
+      this.userForm = await getUserById(this.userId);
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const id = this.userId;
           this.updateUserById(id);
-        } else {
-          return false;
         }
       });
     },
-    updateUserById(id) {
-      this.$http.put(`${id}`, this.userForm).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("修改成功");
-          this.getSingleUserById();
-          window.location.reload();
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+    async updateUserById(id) {
+      await updateUserById(id, this.userForm);
+      this.$message.success("修改成功");
+      this.getSingleUser();
+      window.location.reload();
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    beforeAvatarUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-        return ;
-      }
-      const formData = {
-        file: file,
-      };
-      this.upload(formData);
-      return true;
-    },
-    upload(formData) {
-      this.$http
-        .post("/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            // 上传成功后，显示图片
-            this.$message.success("上传成功");
-            this.userForm.image = res.data.data;
-          }
-        })
-        .catch(() => {
-          this.$message.error("上传失败");
-        });
     },
     passwordDialog() {
       this.dialogPasswordVisible = true;
@@ -295,7 +239,7 @@ export default {
 
 
 
-<style >
+
 .avatar-uploader .el-upload {
   border: 1px dashed black;
   border-radius: 6px;

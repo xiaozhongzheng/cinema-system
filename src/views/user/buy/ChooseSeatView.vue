@@ -159,7 +159,6 @@
                 {{ seat.number }}
               </span>
 
-
               <span
                 v-else-if="(seat.status===1 || seat.status===2) && seat.isCurrentUser === 0"
                 @click="$message.error('不能选择其他用户已选择的座位')"
@@ -199,6 +198,9 @@
 </template>
 
 <script>
+import { getFilmAndScheduleById } from "@/api/schedule";
+import { getSeatsByScheduleId, deleteSeatById } from "@/api/seat";
+import { addCart } from "@/api/cart";
 export default {
   data() {
     return {
@@ -224,8 +226,8 @@ export default {
       seats: [[]], // 存放初始化时的座位数组
       seatNumberArr: [], // 存放当前用户已选的座位信息
       phone: "",
-      path: "ws://47.96.128.212:8080/chooseSeat",
-      // path: "ws://localhost:8080/chooseSeat",
+      // path: "ws://47.96.128.212:8080/chooseSeat",
+      path: "ws://localhost:8080/chooseSeat",
       seatArr: [], // 存放的是服务器传递过来的座位信息
     };
   },
@@ -233,7 +235,7 @@ export default {
     this.id = this.$route.query.id; // 获取排片的id
     this.userId = localStorage.getItem("id"); // 获取用户的id
     this.path += `/${this.id}`;
-    this.getFilmAndScheduleById(); // 获取影片排片信息和座位数
+    this.init(); // 获取影片排片信息和座位数
   },
 
   methods: {
@@ -246,7 +248,7 @@ export default {
         let seat = {
           number: k,
           status: 0, // 0表示座位未选中,1表示已选中，2表示已售卖
-          isCurrentUser: 1, // 1表示是当前用户，0表示不是当前用户
+          isCurrentUser: 0, // 1表示是当前用户，0表示不是当前用户
         };
 
         a[j][i] = seat;
@@ -266,16 +268,15 @@ export default {
 
       //监听是否连接成功
       this.ws.onopen = () => {
-        
         if (this.ws.readyState == 1) {
-          console.log("ws连接成功")
+          console.log("ws连接成功");
         }
         //连接成功则发送一个数据
       };
       //接听服务器发回的信息并处理展示
       this.ws.onmessage = (res) => {
-        console.log("正在接收到来自服务器的消息");
         this.seatArr = JSON.parse(res.data); // 传递的是字符串对象，需要转换成js对象
+        console.log(`接收到自服务器传递的数据长度:${this.seatArr.length}`);
         this.initSeats();
         this.updateSeatStatus();
       };
@@ -295,53 +296,39 @@ export default {
       this.ws.send(data);
     },
     updateSeatStatus() {
-      for (let i in this.seats) {
-        for (let j in this.seats[i]) {
-          for (let x in this.seatArr) {
-            const a = this.seats[i][j];
-            if (a.number === this.seatArr[x].number) {
-              a.status = this.seatArr[x].status;
-              if (this.seatArr[x].userId != this.userId) {
-                a.isCurrentUser = 0;
+      // 更新座位的状态和计算选中的座位
+      this.seats.forEach((arr) => {
+        arr.forEach((item) => {
+          this.seatArr.forEach((seat) => {
+            // 修改座位的状态
+            if (item.number === seat.number) {
+              item.status = seat.status;
+              if (seat.userId == this.userId) {
+                item.isCurrentUser = 1;
               }
+              return; // 跳出本次循环
             }
-          }
-        }
-      }
-      console.log(this.seats)
-    },
-    getSeatsByScheduleId() {
-      this.$http
-        .get("/seat/list", {
-          params: {
-            scheduleId: this.id,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            this.seatArr = res.data.data;
-            this.updateSeatStatus();
-            this.calculateSeats();
-          }
+          });
         });
+      });
+      // 将选中的座位存入到选中座位数组中
+      this.calculateSeats();
     },
-    getFilmAndScheduleById() {
-      this.$http
-        .get("/schedule/filmSchedule", {
-          params: {
-            scheduleId: this.id,
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 1) {
-            this.filmSchedule = res.data.data;
-            this.initSeats(); // 初始化座位数
-            this.getSeatsByScheduleId();
-            this.initWebSocket(); // 初始化websocket
-          }
-        });
+    async init() {
+      this.initWebSocket(); // 初始化websocket
+      this.filmSchedule = await getFilmAndScheduleById({
+        scheduleId: this.id,
+      });
+      this.initSeats(); // 初始化座位数
+      this.updateSeatArr();
     },
-    saveCart() {
+    async updateSeatArr(){
+      this.seatArr = await getSeatsByScheduleId({
+        scheduleId: this.id,
+      });
+      this.updateSeatStatus();
+    },
+    async saveCart() {
       if (this.seatNumberArr.length == 0) {
         this.$message.error("请选择座位");
         return;
@@ -361,17 +348,23 @@ export default {
         startTime: film.startTime,
       };
       // this.toBuyFilm();
-      this.$http.post("/cart/save", cart).then((res) => {
-        if (res.data.code === 1) {
-          this.$message.success("加入购物车成功");
-          this.getSeatsByScheduleId();
-          setTimeout(() => {
-            this.$message.info("请在15分钟内完成付款哦");
-          }, 1000); // 延迟1秒刷新页面
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
+      // this.$http.post("/cart/save", cart).then((res) => {
+      //   if (res.data.code === 1) {
+      //     this.$message.success("加入购物车成功");
+      //     this.getSeatsByScheduleId();
+      //     setTimeout(() => {
+      //       this.$message.info("请在15分钟内完成付款哦");
+      //     }, 1000); // 延迟1秒刷新页面
+      //   } else {
+      //     this.$message.error(res.data.message);
+      //   }
+      // });
+      await addCart(cart);
+      this.$message.success("加入购物车成功");
+      this.updateSeatArr();
+      setTimeout(() => {
+        this.$message.info("请在15分钟内完成付款哦");
+      }, 1000); // 延迟1秒刷新页面
     },
     toBuyFilm() {
       this.$router.push({
@@ -391,40 +384,29 @@ export default {
         userId: this.userId,
       };
       this.sendMessage(JSON.stringify(seat)); // 传递json格式的字符串
-      this.calculateSeats();
     },
-    
-    cancelSeat(rowIndex, seatIndex) {
+
+    async cancelSeat(rowIndex, seatIndex) {
       this.seats[rowIndex][seatIndex].status = 0;
-      this.$http.delete("/seat", {
-        params: {
-          scheduleId: this.id,
-          number: this.seats[rowIndex][seatIndex].number,
-        }
-      }).then(res => {
-        if(res.data.code == 1){
-          this.calculateSeats();
-        }
+      await deleteSeatById({
+        scheduleId: this.id,
+        number: this.seats[rowIndex][seatIndex].number,
       });
-      
     },
 
     calculateSeats() {
-      let a = [];
-      let seatList = this.seats;
-      for (let index in seatList) {
-        for (let i in seatList[index]) {
-          if (
-            seatList[index][i].status == 1 &&
-            seatList[index][i].isCurrentUser == 1
-          ) {
-            a.push(seatList[index][i].number);
+      let selectingArr = [];
+      this.seats.forEach((arr) => {
+        arr.forEach((item) => {
+          if (item.status == 1 && item.isCurrentUser == 1) {
+            // 当前用户正在选择的座位
+            selectingArr.push(item.number);
           }
-        }
-      }
-      this.seatNumberArr = a;
-      // 就算总的价格
-      this.countPrice = this.seatNumberArr.length * this.filmSchedule.price;
+        });
+      });
+      this.seatNumberArr = selectingArr;
+      // 计算总的价格
+      this.countPrice = selectingArr.length * this.filmSchedule.price;
     },
   },
 };

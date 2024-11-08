@@ -9,16 +9,16 @@ const service = axios.create({
   baseURL: '/api', // 基础地址
   timeout: 10000 // 请求时间超过10s就失败
 })
-// 公共接口的路径
-const commonList = ['/login', '/upload', '/logout', '/password']
-const urlList = ['/user', '/employee', '/admin']
+// // 公共接口的路径
+// const commonList = ['/login', '/upload', '/logout', '/password']
+// const urlList = ['/user', '/employee', '/admin']
 // 请求拦截器
 service.interceptors.request.use((config) => {
   // if (!commonList.includes(config.url)) {
   //   // 非公共路径
   //   config.baseURL += urlList[localStorage.getItem('roleId')]
   // }
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('token') || '';
   // 将token放在请求头中
   if (token) {
     config.headers.Authorization = token

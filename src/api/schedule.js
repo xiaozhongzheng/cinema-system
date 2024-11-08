@@ -1,4 +1,3 @@
-import axios from 'axios'
 import request from '@/utils/request'
 
 export function addSchedule(data){
@@ -50,5 +49,14 @@ export function getScheduleListByDate(date,id){
             time: date,
             filmId: id
         }
+    })
+}
+
+
+export function getFilmAndScheduleById(params){
+    return request({
+        url: '/schedule/filmSchedule',
+        method: 'get',
+        params
     })
 }

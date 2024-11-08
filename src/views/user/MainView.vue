@@ -158,11 +158,6 @@ export default {
     };
   },
   created() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // 用户从未登录，需要先登录
-      this.$router.push("/login");
-    }
     this.roleId = localStorage.getItem("roleId");
     this.user.username = localStorage.getItem("username");
     this.indexPath = this.$route.path;

@@ -9,7 +9,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import axios from 'axios'
-import globalConstant from '@/utils/GlobalConstant'
+import globalConstant from '@/utils/global-constant'
 Vue.prototype.global = globalConstant
 Vue.prototype.$http = axios
 

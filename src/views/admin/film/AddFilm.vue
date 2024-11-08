@@ -127,21 +127,8 @@
         prop="image"
         style="width: 30%;"
       >
-        <el-upload
-          class="avatar-uploader"
-          :show-file-list="false"
-          :before-upload="beforeAvatarUpload"
-        >
-          <img
-            v-if="filmForm.image"
-            :src="filmForm.image"
-            class="avatar"
-          >
-          <i
-            v-else
-            class="el-icon-plus avatar-uploader-icon"
-          ></i>
-        </el-upload>
+        <upload-image v-model="filmForm.image" showType = 'film'>
+        </upload-image>
       </el-form-item>
 
       <el-form-item
@@ -167,14 +154,19 @@
       </el-form-item>
 
     </el-form>
+
+
   </div>
 
 </template>
 
 <script>
 import { getFilmById, addFilm, updateFilm } from "@/api/film";
-import { upload } from "@/api/common";
+import UploadImage from '@/components/UploadImage.vue'
 export default {
+  components: {
+    UploadImage
+  },
   data() {
     let validatePrice = (rule, value, callback) => {
       if (value < 5) {
@@ -253,19 +245,7 @@ export default {
     async getFilmById(id) {
       this.filmForm = await getFilmById(id);
     },
-    beforeAvatarUpload(file) {
-      const formData = {
-        file: file,
-      };
-      this.upload(formData);
-      return true;
-    },
-    async upload(formData) {
-      const res = await upload(formData);
-      // 上传成功后，显示图片
-      this.$message.success("上传成功");
-      this.filmForm.image = res;
-    },
+   
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -299,29 +279,7 @@ export default {
 
 
 <style>
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 160px;
-  height: 220px;
-  line-height: 220px;
-  text-align: center;
-}
-.avatar {
-  width: 160px;
-  height: 220px;
-  display: block;
-}
+
 
 .el-textarea__inner {
   /* 去除文本框的滚动条 */

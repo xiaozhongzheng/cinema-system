@@ -139,11 +139,6 @@ export default {
     };
   },
   created() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // 用户从未登录，需要先登录
-      this.$router.push("/login");
-    }
     // 每次页面刷新时保持侧边栏选中的位置不变
     this.indexPath = this.$route.path;
     this.roleId = localStorage.getItem("roleId");
