@@ -187,13 +187,15 @@ export default {
     };
   },
   created() {
-    this.userId = localStorage.getItem("id");
-    this.getSingleUser(); // 获取用户的基本信息
+    // this.userId = localStorage.getItem("id");
+    // this.getSingleUser(); // 获取用户的基本信息
+    this.userId = this.$store.getters.userId
+    this.userForm = this.$store.getters.userInfo
   },
   methods: {
-    async getSingleUser() {
-      this.userForm = await getUserById(this.userId);
-    },
+    // async getSingleUser() {
+    //   this.userForm = await getUserById(this.userId);
+    // },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

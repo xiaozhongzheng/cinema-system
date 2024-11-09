@@ -11,6 +11,7 @@
     "axios": "^1.7.7",
     "core-js": "^3.8.3",
     "element-ui": "^2.15.14",
+    "js-cookie": "^3.0.5",
     "net": "^1.0.2",
     "sockjs-client": "^1.6.1",
     "vue": "^2.6.14",

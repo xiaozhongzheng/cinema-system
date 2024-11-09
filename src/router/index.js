@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LoginView from '../views/login/LoginView.vue'
+import LoginView from '../views/login/index.vue'
+import store from '@/store'
+import { Message } from 'element-ui'
 
 Vue.use(VueRouter)
 let roleId = localStorage.getItem('roleId');
@@ -26,7 +28,7 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: () => import('../views/user/register/RegisterView.vue')
+    component: () => import('../views/user/register/index.vue')
   },
   {
     path: '/admin',
@@ -144,23 +146,37 @@ VueRouter.prototype.push = function push(location) {
 }
 
 
-router.beforeEach((to, from, next) => {
-  let role = localStorage.getItem('roleId');
-  if (role == 0 && (to.path.includes('admin') || to.path.includes('employee'))) {
-    // 当用户访问管理员或员工的页面时，会跳转到该页面
-    next('/404');
 
-  } else if (role == 1 && to.path.includes('user')) {
-    // 当用户访问管理员或员工的页面时，会跳转到该页面
-    next('/404');
-
-  } else if (role == 2 &&  to.path.includes('user')) {
-    // 当用户访问管理员或员工的页面时，会跳转到该页面
-    next('/404');
-
-  } else {
-    next();
+const whiteList = ['/login','/404','/register']
+router.beforeEach(async (to, from, next) => {
+  const token = store.getters.token
+  console.log(to.path)
+  if(to.path === '/404'){
+    next()
+    return
+  }
+  if(token){ // 用户存在token
+    if(roleId == 0 && !to.path.includes('/user')){
+      // 防止用户访问管理端页面
+      next('/404')
+    }
+    else if(to.path === '/login' || to.path === '/register'){
+      roleId == 0 ? next('/user') : next('/admin') 
+    }else{
+      // 在每一次路由跳转前，获取用户的信息
+      await store.dispatch('getUserInfoByRoleId',store.getters.roleId)
+      next()
+    }
+  }else{
+    // 用户不存在token，则跳转到登录页面
+    if(whiteList.includes(to.path)){
+      next()
+    }else{
+      next('/login')
+    }
   }
 })
+
+
 
 export default router

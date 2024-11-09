@@ -128,7 +128,6 @@
 
 
 <script>
-import {logout} from '@/api/common'
 export default {
   data() {
     return {
@@ -139,30 +138,29 @@ export default {
     };
   },
   created() {
+
     // 每次页面刷新时保持侧边栏选中的位置不变
     this.indexPath = this.$route.path;
-    this.roleId = localStorage.getItem("roleId");
-    this.username = localStorage.getItem("username");
+    this.roleId = this.$store.getters.roleId;
+    this.username = this.$store.getters.username;
     const path = localStorage.getItem("indexPath");
     if (path && this.$route.path == "/admin/addFilm") {
       // 用于处理新增电影时页面刷新后侧边栏不显示某个模块的背景颜色
       this.indexPath = path;
     }
   },
-  computed: {
-    key() {
-      // 生成唯一的key，保证每次路由跳转都会刷新页面
-      return this.$route.path + new Date();
-    },
+  watch: {
+    $route(to,from){
+      // 当路由发生变化时刷新页面
+      window.location.reload();
+    }
   },
 
   methods: {
     // 实现退出登录
     async logout(data) {
-      await logout(data)
-      // 清空本地存储的数据
+      await this.$store.dispatch('logout',data)
       this.$message.success('退出成功')
-      localStorage.clear();
       this.$router.push("/login");
       
     },
@@ -171,16 +169,13 @@ export default {
       if (command === "out") {
         // 退出登录
         this.logout({
-          roleId: localStorage.getItem('roleId'),
-          userId: localStorage.getItem('id')
+          roleId: this.$store.getters.roleId,
+          userId: this.$store.getters.userId
         });
         return;
       }
       if (this.$route.path != "/admin/home") {
-        this.$router.push({
-          path: "/admin",
-        });
-        location.reload(); // 重新加载页面
+        this.$router.push('/admin')
       }
     },
 

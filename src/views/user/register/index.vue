@@ -1,7 +1,7 @@
 <template>
   <div id="register">
     <div class="form">
-      <h1 >注册页面</h1>
+      <h1>注册页面</h1>
 
       <el-form
         :model="ruleForm"
@@ -67,7 +67,11 @@
           >
             注册
           </el-button>
-          <el-button type="info" style="width: 100px" @click="to_login">
+          <el-button
+            type="info"
+            style="width: 100px"
+            @click="to_login"
+          >
             取消
           </el-button>
           <!-- <el-button type="info" style="width: 100px" @click="resetForm">
@@ -76,12 +80,13 @@
 
         </el-form-item>
       </el-form>
-      
+
     </div>
   </div>
 </template>
 
 <script>
+import { register } from "@/api/user";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -108,49 +113,39 @@ export default {
         password: "",
         checkPass: "",
         username: "",
-        phone: ""
+        phone: "",
       },
       rules: {
-        password: [{ validator: validatePass,  }],
-        checkPass: [{ validator: validatePass2, }],
+        password: [{ validator: validatePass }],
+        checkPass: [{ validator: validatePass2 }],
         username: [
-            { required: true, message: '请输入用户名',  },
-            { min: 4, max: 8, message: '长度在 4 到 8 个字符',  }
+          { required: true, message: "请输入用户名" },
+          { min: 4, max: 8, message: "长度在 4 到 8 个字符" },
         ],
         phone: [
-            { required: true, message: '请输入电话号码',  },
-            {pattern: /^1[3-9]\d{9}$/,message:"手机号码格式不正确",}
-        ]
+          { required: true, message: "请输入电话号码" },
+          { pattern: /^1[3-9]\d{9}$/, message: "手机号码格式不正确" },
+        ],
       },
     };
   },
-  
+
   methods: {
     register(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
-            let user = this.ruleForm
-            this.$http.post('/user/register',user).then(res => {
-                if(res.data.code === 1){
-                  this.$message.success("注册成功");
-                  this.to_login()
-                }else{
-                  this.$message.error(res.data.message)
-                }
-            })
-        } else {
-          console.log("error submit!!");
-          return false;
+          await register(this.ruleForm);
+          this.$message.success("注册成功");
+          this.to_login();
         }
       });
     },
-    to_login(){
-      this.$router.push("/login")
+    to_login() {
+      this.$router.push("/login");
     },
-    resetForm(){
-      this.$refs.ruleForm.resetFields()
-    }
-    
+    resetForm() {
+      this.$refs.ruleForm.resetFields();
+    },
   },
 };
 </script>
@@ -182,5 +177,4 @@ export default {
   color: white;
   font-size: 18px;
 }
-
 </style>

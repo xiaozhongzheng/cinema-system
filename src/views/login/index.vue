@@ -68,7 +68,6 @@
         >注册</el-button>
       </el-form-item>
     </el-form>
-
   </div>
 </template>
   
@@ -95,32 +94,17 @@ export default {
       url: require("@/assets/logo.png"),
     };
   },
-  created() {},
+  created() {
+    console.log(this.$store.state.token)
+  },
   methods: {
     userLogin(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          let data = this.userForm;
-          // this.$http.post("/login", data).then((res) => {
-
-          // });
-
-          const res = await request({
-            url: "/login",
-            method: "post",
-            data,
-          });
-          
+          await this.$store.dispatch('login',this.userForm);
           this.$message.success("登录成功");
-          const id = res.id;
-          localStorage.setItem(`token`, res.token);
-          // 判断角色类型（管理员，员工，用户）
-          const roleId = res.roleId;
-          localStorage.setItem("roleId", roleId);
-          localStorage.setItem("id", id);
-          localStorage.setItem("username", res.username);
           let toPath = "/admin";
-          if (roleId == 0) {
+          if (this.$store.getters.roleId == 0) {
             toPath = "/user";
           }
           this.$router.push({

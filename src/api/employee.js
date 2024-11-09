@@ -9,6 +9,12 @@ export function updateEmployeeById(data){
     })
 }
 
+export function getEmployeeInfo(){
+    return request({
+        url: `/employee`,
+        method: 'get'
+    })
+}
 
 export function getEmployeeById(id){
     return request({

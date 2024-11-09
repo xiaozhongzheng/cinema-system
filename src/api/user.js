@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function register(data) {
+    return request({
+        url: '/user/register',
+        method: 'post',
+        data
+    })
+}
+
 export function getUserById(id) {
     return request({
         url: '/user/single',

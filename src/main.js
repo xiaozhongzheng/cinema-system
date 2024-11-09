@@ -16,7 +16,7 @@ Vue.prototype.$http = axios
 Vue.config.productionTip = false
 // 全局注册 element 组件库
 Vue.use(ElementUI)
-
+Vue.config.devtools = true
 new Vue({
   router,
   store,

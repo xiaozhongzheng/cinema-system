@@ -136,8 +136,8 @@
 </template>
 
 <script>
-import { getUserById, recharge } from "@/api/user";
-import { logout } from "@/api/common";
+import {  recharge } from "@/api/user";
+import store from '@/store'
 export default {
   data() {
     return {
@@ -152,19 +152,19 @@ export default {
         image: "",
         discount: "",
       },
-      roleId: "",
       showView: false, // 请求成功后展示router-view
     };
   },
   created() {
-    this.roleId = localStorage.getItem("roleId");
-    this.user.username = localStorage.getItem("username");
+    this.user = store.getters.userInfo
     this.indexPath = this.$route.path;
-    this.getSingleUserById();
+    this.showView = true;
+    // this.getSingleUserById();
     let name = localStorage.getItem("title");
     if (name) {
       this.title = name;
     }
+
   },
   watch: {
     $route(to, from) {
@@ -177,17 +177,12 @@ export default {
     },
   },
   methods: {
-    async getSingleUserById() {
-      const id = localStorage.getItem("id");
-      this.user = await getUserById(id);
-      this.showView = true;
-    },
     handleCommand(command) {
       if (command == "out") {
         // 用户退出登录
         this.logout({
-          roleId: localStorage.getItem("roleId"),
-          userId: localStorage.getItem("id"),
+          roleId: store.getters.roleId,
+          userId: store.getters.userId,
         });
         return;
       }
@@ -198,10 +193,9 @@ export default {
     },
     // 实现退出登录
     async logout(data) {
-      await logout(data);
+      await store.dispatch('logout',data);
       // 清空本地存储的数据
       this.$message.success("退出成功");
-      localStorage.clear();
       this.$router.push("/login");
     },
 

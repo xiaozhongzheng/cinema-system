@@ -172,7 +172,7 @@
     
     
 <script>
-import { updateEmployeeById, getEmployeeById } from "@/api/employee";
+import { updateEmployeeById } from "@/api/employee";
 import { updatePassword } from "@/api/common";
 export default {
   data() {
@@ -232,7 +232,8 @@ export default {
   created() {
     this.currentTime = this.getCurrentDate();
     this.id = localStorage.getItem("id");
-    this.getEmployeeById();
+    this.employee = this.$store.getters.userInfo
+
   },
   mounted() {
     let that = this;
@@ -248,10 +249,6 @@ export default {
     }
   },
   methods: {
-    async getEmployeeById() {
-      const res = await getEmployeeById(this.id);
-      this.employee = res;
-    },
     edit() {
       this.dialogFormVisible = true;
       const emp = this.employee;
@@ -278,7 +275,7 @@ export default {
     updateEmployeePassword(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const roleId = localStorage.getItem("roleId")
+          const roleId = this.$store.getters.roleId
           this.pwdForm = {...this.pwdForm,roleId:roleId}
           await updatePassword(this.pwdForm);
           this.$message.success("密码修改成功");

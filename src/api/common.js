@@ -1,5 +1,23 @@
 import request from '@/utils/request'
 
+export function login(data) {
+    return request({
+        url: "/login",
+        method: "post",
+        data
+    })
+}
+
+export function getUserInfo(roleId) {
+    return request({
+        url: `/info`,
+        method: "get",
+        params: {
+            roleId: roleId
+        }
+    })
+}
+
 export function logout(data) {
     return request({
         url: `/logout`,

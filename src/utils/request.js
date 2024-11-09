@@ -1,8 +1,8 @@
 import axios from 'axios'
 // import store from '@/store'
 import { Message } from 'element-ui'
-import { logout } from '@/api/common'
 import router from '@/router'
+import store from '@/store'
 
 // 创建并初始化axios实例
 const service = axios.create({
@@ -18,7 +18,8 @@ service.interceptors.request.use((config) => {
   //   // 非公共路径
   //   config.baseURL += urlList[localStorage.getItem('roleId')]
   // }
-  const token = localStorage.getItem('token') || '';
+  // const token = localStorage.getItem('token') || '';
+  const token = store.getters.token || '';
   // 将token放在请求头中
   if (token) {
     config.headers.Authorization = token
@@ -53,13 +54,11 @@ service.interceptors.response.use((res) => {
   let status = error.response.status
   if (status === 401) {
     // 表示token过期了,清空用户信息并跳转到登录页面
-    await logout({
-      roleId: localStorage.getItem('roleId'),
-      userId: localStorage.getItem('id')
-    })
-    // 清空本地存储的数据
-    localStorage.clear();
-
+    const data = {
+      roleId: store.getters.roleId,
+      userId: store.getters.userId
+    }
+    await store.dispatch('logout',data)
     msg = '登录过期了，请重新登录'
     router.push("/login");
 
