@@ -136,14 +136,15 @@ export default {
   },
   created() {
     this.getCartesByUserId();
-    this.getUserDiscount();
+    this.discount = this.$store.getters.userInfo?.discount;
+    
   },
   methods: {
-    async getUserDiscount() {
-      const id = localStorage.getItem("id");
-      const res = await getUserById(id);
-      this.discount = res.discount;
-    },
+    // async getUserDiscount() {
+    //   const id = localStorage.getItem("id");
+    //   const res = await getUserById(id);
+    //   this.discount = res.discount;
+    // },
     async getCartesByUserId() {
       this.cartArr = await getCartes();
     },

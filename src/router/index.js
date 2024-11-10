@@ -150,15 +150,15 @@ VueRouter.prototype.push = function push(location) {
 const whiteList = ['/login','/404','/register']
 router.beforeEach(async (to, from, next) => {
   const token = store.getters.token
-  console.log(to.path)
+  roleId = store.getters.roleId
   if(to.path === '/404'){
     next()
     return
   }
   if(token){ // 用户存在token
-    if(roleId == 0 && to.path.includes('/admin')){
-      // 防止用户访问管理端页面
-      alert(roleId)
+    const flag = (roleId == 0 && to.path.includes('/admin')) || (roleId != 0 && to.path.includes('/user'))
+    if(flag){
+      // 防止 用户访问管理端页面或管理端访问用户端页面
       next('/404')
     }
     else if(to.path === '/login' || to.path === '/register'){
