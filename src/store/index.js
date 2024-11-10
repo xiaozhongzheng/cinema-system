@@ -49,6 +49,7 @@ export default new Vuex.Store({
       localStorage.clear();
       state.token = null
       state.roleId = null
+      state.userId = null
       state.userInfo = {}
     }
   },

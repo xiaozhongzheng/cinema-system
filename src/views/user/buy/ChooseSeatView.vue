@@ -233,7 +233,7 @@ export default {
   },
   created() {
     this.id = this.$route.query.id; // 获取排片的id
-    this.userId = localStorage.getItem("id"); // 获取用户的id
+    this.userId = this.$store.getters.userId; // 获取用户的id
     this.path += `/${this.id}`; // 用于将排片id传到服务器端
     this.init(); // 初始化影片排片信息和座位数
   },

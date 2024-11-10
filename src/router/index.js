@@ -2,10 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LoginView from '../views/login/index.vue'
 import store from '@/store'
-import { Message } from 'element-ui'
 
 Vue.use(VueRouter)
-let roleId = localStorage.getItem('roleId');
+let roleId = store.getters.roleId;
 
 const routes = [
   {
@@ -136,6 +135,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
@@ -156,8 +156,9 @@ router.beforeEach(async (to, from, next) => {
     return
   }
   if(token){ // 用户存在token
-    if(roleId == 0 && !to.path.includes('/user')){
+    if(roleId == 0 && to.path.includes('/admin')){
       // 防止用户访问管理端页面
+      alert(roleId)
       next('/404')
     }
     else if(to.path === '/login' || to.path === '/register'){

@@ -16,5 +16,6 @@ module.exports = defineConfig({
     client: { // 使页面不出现全屏报错
       overlay: false
     }
+    
   }
 })

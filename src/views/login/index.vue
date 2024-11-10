@@ -95,7 +95,6 @@ export default {
     };
   },
   created() {
-    console.log(this.$store.state.token)
   },
   methods: {
     userLogin(formName) {

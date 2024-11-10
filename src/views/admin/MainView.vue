@@ -113,7 +113,7 @@
 
         <el-main style="text-align: center;background-color: rgb(244, 246, 248);">
 
-          <router-view :key="key"></router-view>
+          <router-view ></router-view>
 
         </el-main>
 
