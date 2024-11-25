@@ -100,7 +100,6 @@
         style="text-align: center"
       >
         <el-pagination
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageNo"
           :page-size="pageSize"
@@ -116,13 +115,19 @@
         description="这里空空如也"
       ></el-empty>
     </div>
-
   </div>
 </template> 
 
 <script>
 import { pageQueryFilm } from "@/api/film";
+import {throttle} from '@/utils/optimization'
 export default {
+  props: {
+    titleName: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       pageSize: 18, // 每页展示18条数据
@@ -153,8 +158,19 @@ export default {
   },
   created() {
     this.init();
-    this.title = localStorage.getItem("title");
-    this.pageQueryFilmList();
+    this.pageQueryFilmList(); 
+    // 使用节流的方法在每隔1秒发一次查询影片的请求
+    this.fun = throttle(this.pageQueryFilmList,1000)
+  },
+  watch: {
+    titleName(){
+      this.fun()
+    },
+    $route(to,from){
+      if(to.path!=='/user/movies'){
+        this.filmArr = []
+      }
+    }
   },
   methods: {
     async pageQueryFilmList() {
@@ -163,7 +179,7 @@ export default {
         pageSize: this.pageSize,
         type: this.type,
         region: this.region,
-        title: this.title,
+        title: this.titleName,
       });
       this.filmArr = res.records;
       this.total = res.total;

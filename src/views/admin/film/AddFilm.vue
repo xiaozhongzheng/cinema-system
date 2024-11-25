@@ -233,7 +233,7 @@ export default {
     };
   },
   created() {
-    localStorage.setItem("indexPath", "/admin/film");
+    // localStorage.setItem("indexPath", "/admin/film");
     const id = this.$route.query.id;
     if (id) {
       // 表明这是新增操作

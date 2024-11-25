@@ -237,7 +237,11 @@ export default {
     this.path += `/${this.id}`; // 用于将排片id传到服务器端
     this.init(); // 初始化影片排片信息和座位数
   },
-
+  watch: {
+    phone(newVal,oldVal){
+      console.log(newVal,oldVal)
+    }
+  },
   methods: {
     initSeats() {
       let j = 0,
@@ -353,7 +357,7 @@ export default {
       this.updateSeatArr();
       setTimeout(() => {
         this.$message.info("请在15分钟内完成付款哦");
-      }, 1000); // 延迟1秒刷新页面
+      }, 1000); // 延迟1秒
     },
     // 用户选择座位时执行该方法
     selectSeat(rowIndex, seatIndex) {

@@ -138,21 +138,15 @@ export default {
     };
   },
   created() {
-
     // 每次页面刷新时保持侧边栏选中的位置不变
-    this.indexPath = this.$route.path;
+    this.indexPath = this.$route.path
     this.roleId = this.$store.getters.roleId;
     this.username = this.$store.getters.username;
-    const path = localStorage.getItem("indexPath");
-    if (path && this.$route.path == "/admin/addFilm") {
-      // 用于处理新增电影时页面刷新后侧边栏不显示某个模块的背景颜色
-      this.indexPath = path;
-    }
   },
   watch: {
     $route(to,from){
-      // 当路由发生变化时刷新页面
-      window.location.reload();
+      // 当路由改变时，indexPath也需改变
+      this.indexPath = to.path;
     }
   },
 

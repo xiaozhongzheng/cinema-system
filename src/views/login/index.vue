@@ -3,7 +3,7 @@
     <el-form
       :model="userForm"
       :rules="rules"
-      ref="userForm"
+      :ref="refName"
       label-width="auto"
       class="form"
       style="text-align: center;"
@@ -58,7 +58,7 @@
       <el-form-item>
         <el-button
           type="primary"
-          @click="userLogin('userForm')"
+          @click="throttleHandle"
           style="width: 100px;"
         >登录</el-button>
         <el-button
@@ -72,7 +72,7 @@
 </template>
   
 <script>
-import request from "@/utils/request";
+import { throttle,debounce } from "@/utils/optimization";
 export default {
   data() {
     return {
@@ -92,29 +92,36 @@ export default {
         ],
       },
       url: require("@/assets/logo.png"),
+      refName: 'userForm'
     };
   },
   created() {
+    // 当登录的用户在0.5秒内连续点击登录按钮时，登录请求只会执行一次
+    this.throttleHandle = debounce(this.userLogin,500)
   },
   methods: {
-    userLogin(formName) {
-      this.$refs[formName].validate(async (valid) => {
+    userLogin() {
+      this.$refs[this.refName].validate((valid) => {
         if (valid) {
-          await this.$store.dispatch('login',this.userForm);
-          this.$message.success("登录成功");
-          let toPath = "/admin";
-          if (this.$store.getters.roleId == 0) {
-            toPath = "/user";
-          }
-          this.$router.push({
-            path: toPath,
-          });
+         this.handleLogin()
         }
+      });
+    },
+    async handleLogin() {
+      await this.$store.dispatch("login", this.userForm);
+      this.$message.success("登录成功");
+      let toPath = "/admin";
+      if (this.$store.getters.roleId == 0) {
+        toPath = "/user";
+      }
+      this.$router.push({
+        path: toPath,
       });
     },
     toRegisterView() {
       this.$router.push("/register");
     },
+    
   },
 };
 </script>

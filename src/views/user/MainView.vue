@@ -31,15 +31,15 @@
 
             <el-input
               v-model="title"
-              placeholder="请输入电影名"
-              style="width: 20%;margin-left: 20px"
+              placeholder="请输入要查询的电影名"
+              style="width: 20%;margin-left: 50px"
             ></el-input>
-            <el-button
+            <!-- <el-button
               icon="el-icon-search"
               circle
               style="margin-left: 10px"
               @click="pageQueryByTitle()"
-            ></el-button>
+            ></el-button> -->
             <el-button
               type="success"
               style="margin-left: 5%"
@@ -128,7 +128,12 @@
       </el-dialog>
 
       <el-main>
-        <router-view v-if="showView"></router-view>
+        <keep-alive>
+          <router-view
+            v-if="showView"
+            :titleName="title"
+          ></router-view>
+        </keep-alive>
       </el-main>
     </el-container>
 
@@ -136,8 +141,8 @@
 </template>
 
 <script>
-import {  recharge } from "@/api/user";
-import store from '@/store'
+import { recharge } from "@/api/user";
+import store from "@/store";
 export default {
   data() {
     return {
@@ -156,24 +161,34 @@ export default {
     };
   },
   created() {
-    this.user = store.getters.userInfo
-    this.indexPath = this.$route.path;
+    this.indexPath = this.$route.path
+    this.user = store.getters.userInfo;
     this.showView = true;
-    // this.getSingleUserById();
-    let name = localStorage.getItem("title");
-    if (name) {
-      this.title = name;
-    }
-
   },
   watch: {
+    // 监听路由的变化
     $route(to, from) {
       this.indexPath = to.path;
-      if (to.path != "/user/movies") {
-        window.location.reload(); //监测到路由发生跳转时刷新一次页面
-        localStorage.removeItem("title"); // 将查询时绑定的title值除去
-      }
       document.documentElement.scrollTop = 0; // 使页面回到顶部
+    },
+    title() {
+      this.toShowMovies();
+    },
+    
+  },
+  computed: {
+    getDiscount() {
+      let userDiscount = this.user.discount; // 折扣
+      let discount = 1;
+      const m = this.money;
+      if (m >= 1000) {
+        discount = 0.8;
+      } else if (m >= 400) {
+        discount = 0.9;
+      } else if (m >= 200) {
+        discount = 0.95;
+      }
+      return discount < userDiscount ? discount : userDiscount;
     },
   },
   methods: {
@@ -193,29 +208,16 @@ export default {
     },
     // 实现退出登录
     async logout(data) {
-      await store.dispatch('logout',data);
+      await store.dispatch("logout", data);
       // 清空本地存储的数据
       this.$message.success("退出成功");
       this.$router.push("/login");
     },
 
     async recharge() {
-      const m = this.money;
-      let userDiscount = this.user.discount; // 折扣
-      let discount = 1;
-      if (m >= 1000) {
-        discount = 0.8;
-      } else if (m >= 400) {
-        discount = 0.9;
-      } else if (m >= 200) {
-        discount = 0.95;
-      }
-      if (discount < userDiscount) {
-        userDiscount = discount;
-      }
       await recharge({
         money: this.money,
-        discount: discount,
+        discount: this.getDiscount,
       });
       this.$message.success("充值成功");
       this.resetMoney();
@@ -224,16 +226,12 @@ export default {
       this.money = "";
       this.dialogVisible = false;
     },
-    pageQueryByTitle() {
-      let curPath = this.$route.path;
-      localStorage.setItem("title", this.title);
-      if (curPath == "/user/movies") {
-        location.reload();
-        return;
+    toShowMovies() {
+      if (this.indexPath !== "/user/movies") {
+        this.$router.push({
+          name: "movies",
+        })
       }
-      this.$router.push({
-        name: "movies",
-      });
     },
   },
 };

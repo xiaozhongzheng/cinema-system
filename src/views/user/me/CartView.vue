@@ -11,12 +11,13 @@
           <div
             class="cartStyle"
             v-for="cart in cartArr"
+            :key="cart.id"
           >
 
             <div style="float: left;align-content: center;height: 100%;width: 5%;text-align: center">
               <el-checkbox
                 :label="cart"
-                :key="cart"
+                :key="JSON.stringify(cart)"
                 style="margin-left: 7px"
               >
                 <!-- br的作用是使复选框不显示label的内容 -->
