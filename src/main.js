@@ -10,9 +10,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import axios from 'axios'
 import globalConstant from '@/utils/global-constant'
-Vue.prototype.global = globalConstant
+Vue.prototype.$constant = globalConstant
 Vue.prototype.$http = axios
-
 Vue.config.productionTip = false
 // 全局注册 element 组件库
 Vue.use(ElementUI)

@@ -1,7 +1,7 @@
 <template>
   <div id="#employee">
     <div style="text-align: left">
-      <el-input
+      <!-- <el-input
         placeholder="请输入用户名"
         v-model="username"
         style="width: 20%;margin-bottom: 10px;"
@@ -40,18 +40,8 @@
           value="0"
         ></el-option>
 
-      </el-select>
+      </el-select> -->
 
-      <el-button
-        type="info"
-        @click="pageQueryEmployee"
-        style="margin-left: 20px"
-      >查询</el-button>
-      <el-button
-        type="info"
-        @click="reset"
-        style="margin-left: 20px"
-      >重置</el-button>
 
       <el-button
         type="primary"
@@ -119,89 +109,41 @@
       </div>
     </el-dialog>
 
-    <el-table
-      :data="employeeArr"
-      style="width: 100%"
+    <SearchTableTemplate
+      ref="searchTableTemplateRef"
+      v-if="pageQueryApi"
+      :table-list-api="pageQueryApi"
+      :extra-params="extraParams"
+      :table-params-list="tableParamsList"
+      :search-params-list="searchParamsList"
+      :show-search-form="showSearchForm"
     >
-
-      <el-table-column
-        prop="username"
-        label="用户名"
-        width="180"
+      <template
+        slot="columnHandle"
+        slot-scope="{row}"
       >
-      </el-table-column>
-      <el-table-column
-        prop="phone"
-        label="电话号码"
-      >
-      </el-table-column>
-      <el-table-column label="身份">
-        <template slot-scope="scope">
-          {{ scope.row.roleId == 1 ? '员工' : '管理员' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="账号状态">
-        <template slot-scope="scope">
-          {{ scope.row.status == 1 ? '启用' : '禁用' }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-      >
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="300"
-      >
-
-        <template
-          slot-scope="scope"
-          v-if="scope.row.username!='admin'"
+        <el-button
+          @click="updateAdmin(row)"
+          style="width: 100px"
+          type="success"
+          size="small"
         >
-          <el-button
-            @click="updateAdmin(scope.row)"
-            style="width: 100px"
-            type="success"
-            size="small"
-          >
-            设为{{ scope.row.roleId == 2 ? '员工' : '管理员' }}
-          </el-button>
-
-          <el-button
-            type="warning"
-            @click="updateStatus(scope.row)"
-            size="small"
-
-          >
-            {{ scope.row.status == 0 ? '启用' : '禁用' }}
-          </el-button>
-          <el-button
-            type="danger"
-            @click="handleDelete(scope.row)"
-            size="small"
-
-          >删除</el-button>
-        </template>
-      </el-table-column>
-
-    </el-table>
-
-    <div
-      class="block"
-      style="margin-top: 10px"
-    >
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="pageNo"
-        :page-sizes="[2,5,10,20]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
-      </el-pagination>
-    </div>
+          设为{{ row.roleId == 2 ? '员工' : '管理员' }}
+        </el-button>
+        <el-button
+          type="warning"
+          @click="updateStatus(row)"
+          size="small"
+        >
+          {{ row.status == 0 ? '启用' : '禁用' }}
+        </el-button>
+        <el-button
+          type="danger"
+          @click="handleDelete(row)"
+          size="small"
+        >删除</el-button>
+      </template>
+    </SearchTableTemplate>
 
   </div>
 </template>
@@ -216,8 +158,12 @@
 /**
  * 一次性导入所有方法
  */
-import * as emp from '@/api/employee'
+import * as emp from "@/apis/employee";
 export default {
+  components: {
+    Pager: () => import("@/components/Pager.vue"),
+    SearchTableTemplate: () => import("@/components/SearchTableTemplate.vue"),
+  },
   data() {
     return {
       employeeArr: [],
@@ -248,47 +194,109 @@ export default {
       pageNo: 1,
       pageSize: 10,
       total: 0,
+      // 表格中columns的值
+      tableParamsList: [
+        {
+          label: "用户名",
+          prop: "username",
+        },
+        {
+          label: "电话号码",
+          prop: "phone",
+        },
+        {
+          label: "身份",
+          prop: "roleId",
+          text: this.$constant.userRoleArr,
+        },
+        {
+          label: "账号状态",
+          prop: "status",
+          text: this.$constant.buttonStatusArr,
+        },
+        {
+          label: "创建时间",
+          prop: "createTime",
+        },
+      ],
+      extraParams: {}, // 分页查询的额外参数
+      pageQueryApi: "", // 发送接口请求的函数（分页查询）
+      searchParamsList: [
+        {
+          label: '用户名',
+          prop: 'username',
+          type: 'input',
+          placeholder: '请输入用户名'
+        },
+        {
+          label: '身份',
+          prop: 'roleId',
+          type: 'select',
+          placeholder: '请选择身份',
+          options: [
+            {
+              label: '管理员',
+              value: 2
+            },
+            {
+              label: '员工',
+              value: 1
+            },
+          ]
+        },
+        {
+          label: '状态',
+          prop: 'status',
+          type: 'select',
+          placeholder: '请选择账号状态',
+          options: [
+            {
+              label: '启用',
+              value: 1
+            },
+            {
+              label: '禁用',
+              value: 0
+            },
+          ]
+        },
+      ] // 绑定条件查询的参数
     };
   },
   created() {
-    this.pageQueryEmployee();
+    // this.pageQueryEmployee();
+    this.pageQueryApi = emp.pageQueryEmployee;
+    this.showSearchForm = true
   },
   methods: {
-    async pageQueryEmployee() {
-      const res = await emp.pageQueryEmployee({
-        username: this.username,
-        roleId: this.roleId,
-        status: this.status,
-        pageNo: this.pageNo,
-        pageSize: this.pageSize,
-      });
-      this.employeeArr = res.records;
-      this.total = res.total;
-    },
+    // async pageQueryEmployee() {
+    //   const res = await emp.pageQueryEmployee({
+    //     username: this.username,
+    //     roleId: this.roleId,
+    //     status: this.status,
+    //     pageNo: this.pageNo,
+    //     pageSize: this.pageSize,
+    //   });
+    //   this.employeeArr = res.records;
+    //   this.total = res.total;
+    // },
     reset() {
       (this.username = ""), (this.roleId = ""), (this.status = "");
-      this.pageQueryEmployee();
+      // this.pageQueryEmployee();
     },
     addEmployee(formName) {
       this.$refs[formName].validate(async (valid) => {
         await emp.addEmployee(this.empForm);
         this.$message.success("添加员工成功");
         this.resetForm();
-        this.pageQueryEmployee();
+        // this.pageQueryEmployee();
       });
     },
     resetForm() {
       this.$refs.empForm.resetFields();
       this.dialogFormVisible = false;
     },
-    handleSizeChange(val) {
-      this.pageSize = val;
-      this.pageQueryEmployee();
-    },
-    handleCurrentChange(val) {
-      this.pageNo = val;
-      this.pageQueryEmployee();
-    },
+
     handleDelete(row) {
       let name = row.roleId == 2 ? "管理员" : "员工";
       this.$confirm(`此操作将永久删除${name}, 是否继续?`, "提示", {
@@ -298,12 +306,14 @@ export default {
       })
         .then(async () => {
           const id = row.id;
-          await emp.deleteEmployee(id)
+          await emp.deleteEmployee(id);
           this.$message({
-                type: "success",
-                message: "删除成功",
-              });
-              this.pageQueryEmployee();
+            type: "success",
+            message: "删除成功",
+          });
+      this.$refs["searchTableTemplateRef"].pageQueryEmployee();
+
+          // this.pageQueryEmployee();
         })
         .catch(() => {
           this.$message({
@@ -326,7 +336,8 @@ export default {
     async handleUpdate(data) {
       await emp.updateEmployeeById(data);
       this.$message.success("修改状态成功");
-      this.pageQueryEmployee();
+      this.$refs["searchTableTemplateRef"].pageQueryEmployee();
+      // this.pageQueryEmployee();
     },
     updateAdmin(row) {
       if (row.status === 0) {

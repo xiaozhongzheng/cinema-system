@@ -6,7 +6,7 @@ module.exports = defineConfig({
     port: 8088,
     proxy: {
       '/api': {
-        target: `http://localhost:8080`,
+        target: `http://localhost:8888`,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
@@ -16,6 +16,23 @@ module.exports = defineConfig({
     client: { // 使页面不出现全屏报错
       overlay: false
     }
-    
+
+  },
+  configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"],
+              plugins: [["@babel/plugin-transform-runtime"]],
+            },
+          },
+        },
+      ]
+    }
   }
 })
