@@ -116,7 +116,7 @@
       ></el-empty>
     </div>
   </div>
-</template> 
+</template>
 
 <script>
 import { pageQueryFilm } from "@/api/film";
@@ -136,8 +136,8 @@ export default {
       total: "",
       isAllType: true,
       isAllRegion: true,
-      typeArr: this.global.filmTypeArr,
-      regionArr: this.global.regionArr,
+      typeArr: this.$constant.filmTypeArr,
+      regionArr: this.$constant.regionArr,
       typeObjArr: [],
       regionObjArr: [],
       type: "",
@@ -158,7 +158,7 @@ export default {
   },
   created() {
     this.init();
-    this.pageQueryFilmList(); 
+    this.pageQueryFilmList();
     // 使用节流的方法在每隔1秒发一次查询影片的请求
     this.fun = throttle(this.pageQueryFilmList,1000)
   },

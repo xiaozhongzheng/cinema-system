@@ -42,18 +42,14 @@
 
       </el-select> -->
 
-
-      <el-button
-        type="primary"
-        style="margin-left: 20px"
-        @click="dialogFormVisible = true"
-      >新增员工</el-button>
     </div>
     <!-- 新增员工弹框 -->
     <el-dialog
       title="新增员工"
       :visible.sync="dialogFormVisible"
       @close="resetForm"
+      modal
+      :close-on-click-modal="false"
     >
       <el-form
         :model="empForm"
@@ -118,6 +114,13 @@
       :search-params-list="searchParamsList"
       :show-search-form="showSearchForm"
     >
+      <template slot="handle">
+        <el-button
+          type="primary"
+          style="margin-left: 20px"
+          @click="showDialog"
+        >新增员工</el-button>
+      </template>
       <template
         slot="columnHandle"
         slot-scope="{row}"
@@ -158,7 +161,7 @@
 /**
  * 一次性导入所有方法
  */
-import * as emp from "@/apis/employee";
+import * as emp from "@/api/employee";
 export default {
   components: {
     Pager: () => import("@/components/Pager.vue"),
@@ -223,50 +226,50 @@ export default {
       pageQueryApi: "", // 发送接口请求的函数（分页查询）
       searchParamsList: [
         {
-          label: '用户名',
-          prop: 'username',
-          type: 'input',
-          placeholder: '请输入用户名'
+          label: "用户名",
+          prop: "username",
+          type: "input",
+          placeholder: "请输入用户名",
         },
         {
-          label: '身份',
-          prop: 'roleId',
-          type: 'select',
-          placeholder: '请选择身份',
+          label: "身份",
+          prop: "roleId",
+          type: "select",
+          placeholder: "请选择身份",
           options: [
             {
-              label: '管理员',
-              value: 2
+              label: "管理员",
+              value: 2,
             },
             {
-              label: '员工',
-              value: 1
+              label: "员工",
+              value: 1,
             },
-          ]
+          ],
         },
         {
-          label: '状态',
-          prop: 'status',
-          type: 'select',
-          placeholder: '请选择账号状态',
+          label: "状态",
+          prop: "status",
+          type: "select",
+          placeholder: "请选择账号状态",
           options: [
             {
-              label: '启用',
-              value: 1
+              label: "启用",
+              value: 1,
             },
             {
-              label: '禁用',
-              value: 0
+              label: "禁用",
+              value: 0,
             },
-          ]
+          ],
         },
-      ] // 绑定条件查询的参数
+      ], // 绑定条件查询的参数
     };
   },
   created() {
     // this.pageQueryEmployee();
     this.pageQueryApi = emp.pageQueryEmployee;
-    this.showSearchForm = true
+    this.showSearchForm = true;
   },
   methods: {
     // async pageQueryEmployee() {
@@ -280,6 +283,9 @@ export default {
     //   this.employeeArr = res.records;
     //   this.total = res.total;
     // },
+    showDialog(){
+      this.dialogFormVisible = true
+    },
     reset() {
       (this.username = ""), (this.roleId = ""), (this.status = "");
       // this.pageQueryEmployee();
@@ -289,7 +295,8 @@ export default {
         await emp.addEmployee(this.empForm);
         this.$message.success("添加员工成功");
         this.resetForm();
-        // this.pageQueryEmployee();
+        // 调用子组件的分页查询方法
+        this.$refs["searchTableTemplateRef"].pageQueryData();
       });
     },
     resetForm() {
@@ -311,7 +318,7 @@ export default {
             type: "success",
             message: "删除成功",
           });
-      this.$refs["searchTableTemplateRef"].pageQueryEmployee();
+          this.$refs["searchTableTemplateRef"].pageQueryData();
 
           // this.pageQueryEmployee();
         })
@@ -336,7 +343,7 @@ export default {
     async handleUpdate(data) {
       await emp.updateEmployeeById(data);
       this.$message.success("修改状态成功");
-      this.$refs["searchTableTemplateRef"].pageQueryEmployee();
+      this.$refs["searchTableTemplateRef"].pageQueryData();
       // this.pageQueryEmployee();
     },
     updateAdmin(row) {

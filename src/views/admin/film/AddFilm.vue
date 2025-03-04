@@ -228,8 +228,8 @@ export default {
         ],
       },
       handelType: "add",
-      typeArr: this.global.filmTypeArr,
-      regionArr: this.global.regionArr,
+      typeArr: this.$constant.filmTypeArr,
+      regionArr: this.$constant.regionArr,
     };
   },
   created() {
@@ -245,7 +245,7 @@ export default {
     async getFilmById(id) {
       this.filmForm = await getFilmById(id);
     },
-   
+
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

@@ -1,6 +1,6 @@
 <template>
   <div id="film">
-    <div style="height: 50px;text-align: left">
+    <!-- <div style="height: 50px;text-align: left">
       <el-input
         placeholder="请输入电影名"
         v-model="title"
@@ -53,9 +53,9 @@
         v-if="roleId == 2"
         @click="toAddFilm"
       >新增影片</el-button>
-    </div>
+    </div> -->
 
-    <el-table
+    <!-- <el-table
       :data="filmArr"
       style="width: 100%;"
     >
@@ -139,9 +139,47 @@
         </template>
       </el-table-column>
 
-    </el-table>
+    </el-table> -->
+    <SearchTableTemplate
+      ref="searchTableTemplateRef"
+      v-if="pageQueryApi"
+      :table-list-api="pageQueryApi"
+      :extra-params="extraParams"
+      :table-params-list="tableParamsList"
+      :search-params-list="searchParamsList"
+      :show-search-form="showSearchForm"
+    >
+      <template slot="handle">
+        <el-button
+          type="primary"
+          style="margin-left: 20px"
+          v-if="roleId == 2"
+          @click="toAddFilm"
+        >新增影片</el-button>
+      </template>
+      <template
+        slot-scope="scope"
+        slot="columnHandle"
+      >
+        <el-button
+          type="success"
+          @click="showAddSchduleForm(scope.row)"
+          v-if="roleId == 1"
+        >排片</el-button>
+        <el-button
+          type="warning"
+          @click="handleEdit(scope.row)"
+          v-if="roleId == 2"
+        >编辑</el-button>
 
-    <div class="block">
+        <el-button
+          type="danger"
+          @click="handleDelete(scope.row)"
+          v-if="roleId == 2"
+        >删除</el-button>
+      </template>
+    </SearchTableTemplate>
+    <!-- <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -152,7 +190,7 @@
         :total="total"
       >
       </el-pagination>
-    </div>
+    </div> -->
 
     <add-schedule-dialog
       :showDialog="dialogFormVisible"
@@ -166,33 +204,91 @@
 
 <script>
 import { pageQueryFilm, deleteFilmById } from "@/api/film";
-import AddScheduleDialog from '../schedule/components/AddScheduleDialog.vue';
+import AddScheduleDialog from "../schedule/components/AddScheduleDialog.vue";
 export default {
   components: {
     AddScheduleDialog,
+    SearchTableTemplate: () => import("@/components/SearchTableTemplate.vue"),
   },
   data() {
     return {
-      filmArr: [],
-      pageNo: 1,
-      pageSize: 4,
-      title: "",
-      type: "",
-      region: "",
-      total: 0,
-      typeArr: this.global.filmTypeArr,
-      regionArr: this.global.regionArr,
+      typeArr: this.$constant.filmTypeArr,
+      regionArr: this.$constant.regionArr,
       dialogFormVisible: false,
       film: {},
       roleId: "",
+      pageQueryApi: "",
+      extraParams: {},
+      tableParamsList: [
+        {
+          label: "名称",
+          prop: "title",
+        },
+        {
+          label: "图片",
+          prop: "image",
+          isImage: true,
+        },
+        {
+          label: "上映日期",
+          prop: "releaseDate",
+        },
+        {
+          label: "价格",
+          prop: "price",
+        },
+        {
+          label: "类型",
+          prop: "type",
+          text: this.$constant.filmTypeArr,
+        },
+        {
+          label: "地区",
+          prop: "region",
+          text: this.$constant.regionArr,
+        },
+        {
+          label: "时长",
+          prop: "duration",
+        },
+      ],
+      searchParamsList: [
+        {
+          label: "影片名",
+          prop: "title",
+          type: "input",
+          placeholder: "请输入影片名",
+        },
+        {
+          label: "类型",
+          prop: "type",
+          type: "select",
+          placeholder: "请选择类型",
+          options: this.$constant.filmTypeArr.map((item,index) => ({value: index,label: item}))
+        },
+        {
+          label: "地区",
+          prop: "region",
+          type: "select",
+          placeholder: "请选择地区",
+          options: this.$constant.regionArr.map((item,index) => ({value: index,label: item}))
+        },
+      ], // 绑定条件查询的参数
+      showSearchForm: false,
     };
+  },
+  computed: {
+
   },
   created() {
     this.roleId = localStorage.getItem("roleId");
-    this.pageQueryFilm();
+    // this.pageQuery();
+    this.pageQueryApi = pageQueryFilm;
+    this.showSearchForm = true
+    console.log(this.getTypeArr,'***')
   },
   methods: {
-    pageQuery(){
+    pageQuery() {
       this.pageNo = 1;
       this.pageSize = 4;
       this.pageQueryFilm();

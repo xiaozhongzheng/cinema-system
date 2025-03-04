@@ -220,8 +220,8 @@ export default {
         // price: 33,
         // seatCount: 40, // 座位数
       },
-      typeArr: this.global.filmTypeArr,
-      regionArr: this.global.regionArr,
+      typeArr: this.$constant.filmTypeArr,
+      regionArr: this.$constant.regionArr,
       countPrice: 0, // 总价
       seats: [[]], // 存放初始化时的座位数组
       seatNumberArr: [], // 存放当前用户已选的座位信息
@@ -327,7 +327,7 @@ export default {
       this.updateSeatArr();
     },
     // 获取用户已选的座位并进行状态更新
-    async updateSeatArr(){ 
+    async updateSeatArr(){
       this.seatArr = await getSeatsByScheduleId({
         scheduleId: this.id,
       });

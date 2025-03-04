@@ -225,7 +225,7 @@
 
   </div>
 </template>
-  
+
   <script>
 import { getScheduleDateList, getScheduleListByDate } from "@/api/schedule";
 import { getFilmById } from "@/api/film";
@@ -236,8 +236,8 @@ export default {
       id: "", // 用于存放影片的id
       film: {},
       filmDateList: "",
-      typeArr: this.global.filmTypeArr,
-      regionArr: this.global.regionArr,
+      typeArr: this.$constant.filmTypeArr,
+      regionArr: this.$constant.regionArr,
       value: 0,
       textArr: ["非常差", "比较差", "一般般", "比较好", "完美"],
       dialogVisible: false,
@@ -365,8 +365,8 @@ export default {
   },
 };
 </script>
-  
-  
+
+
   <style scoped>
 .top {
   width: 100%;

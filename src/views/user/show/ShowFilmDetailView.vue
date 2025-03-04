@@ -215,8 +215,8 @@ export default {
     return {
       id: "", // 用于存放影片的id
       film: {},
-      typeArr: this.global.filmTypeArr,
-      regionArr: this.global.regionArr,
+      typeArr: this.$constant.filmTypeArr,
+      regionArr: this.$constant.regionArr,
       value: 0,
       textArr: ["非常差", "比较差", "一般般", "比较好", "完美"],
       dialogVisible: false,
@@ -262,7 +262,7 @@ export default {
         return;
       }
       this.commentForm.score = this.value;
-      this.commentForm.filmId = this.id;  
+      this.commentForm.filmId = this.id;
       await addComment(this.commentForm);
       this.$message.success("评价成功");
       this.cancel();
