@@ -140,7 +140,7 @@
 
   </div>
 </template>
-    
+
 <script>
 import { getScreenRoomList } from "@/api/screen";
 import { pageQuerySchedule } from "@/api/schedule";
@@ -224,10 +224,9 @@ export default {
   },
 };
 </script>
-    
-    
-    
+
+
+
 <style scoped>
 </style>
-    
-    
+

@@ -43,6 +43,11 @@
       </el-select> -->
 
     </div>
+    <ImportEmployee
+      @handleSuccess="handleSuccess"
+      :dialogVisible.sync="dialogVisible"
+      v-if="dialogVisible"
+    ></ImportEmployee>
     <!-- 新增员工弹框 -->
     <el-dialog
       title="新增员工"
@@ -115,11 +120,21 @@
       :show-search-form="showSearchForm"
     >
       <template slot="handle">
-        <el-button
+        <div style="margin-bottom: 20px;">
+          <el-button
           type="primary"
           style="margin-left: 20px"
           @click="showDialog"
         >新增员工</el-button>
+        <el-button
+          type=""
+          @click="exportExcel"
+        >导出文件</el-button>
+        <el-button
+          type=""
+          @click="dialogVisible = true"
+        >导入文件</el-button>
+        </div>
       </template>
       <template
         slot="columnHandle"
@@ -162,13 +177,17 @@
  * 一次性导入所有方法
  */
 import * as emp from "@/api/employee";
+import FileSaver from "file-saver";
+import ImportEmployee from "./components/ImportEmployee.vue";
 export default {
   components: {
     Pager: () => import("@/components/Pager.vue"),
     SearchTableTemplate: () => import("@/components/SearchTableTemplate.vue"),
+    ImportEmployee,
   },
   data() {
     return {
+      dialogVisible: false,
       employeeArr: [],
       username: "",
       roleId: "",
@@ -283,8 +302,17 @@ export default {
     //   this.employeeArr = res.records;
     //   this.total = res.total;
     // },
-    showDialog(){
-      this.dialogFormVisible = true
+    handleSuccess() {
+      this.$message.success("上传成功");
+      this.$refs.searchTableTemplateRef.pageQueryData();
+    },
+    async exportExcel() {
+      const res = await emp.exportExcel();
+      console.log(res, "export");
+      FileSaver.saveAs(res.data, "员工信息表.xlsx");
+    },
+    showDialog() {
+      this.dialogFormVisible = true;
     },
     reset() {
       (this.username = ""), (this.roleId = ""), (this.status = "");

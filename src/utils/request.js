@@ -34,6 +34,7 @@ service.interceptors.request.use((config) => {
 
 // 响应拦截器
 service.interceptors.response.use((res) => {
+  if(res.data instanceof Blob) return res
   const { data, message, code } = res.data
   if (code === 1) {
     // 表示响应成功

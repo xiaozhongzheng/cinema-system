@@ -1,12 +1,29 @@
 
 import request from '@/utils/request'
 
-export function updateEmployeeById(data){
+export function exportExcel(){
     return request({
-        url: `/employee/edit`,
-        method: 'put',
-        data
+        url: `/export/excel`,
+        method: 'get',
+        responseType: 'blob'
     })
+}
+export function importExcel(data){
+  return request({
+      url: `/import/excel`,
+      method: 'post',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      data
+  })
+}
+export function updateEmployeeById(data){
+  return request({
+      url: `/employee/edit`,
+      method: 'put',
+      data
+  })
 }
 
 export function getEmployeeInfo(){
@@ -43,6 +60,6 @@ export function deleteEmployee(id){
     return request({
         url: `/employee/${id}`,
         method: 'delete',
-        
+
     })
 }
