@@ -6,7 +6,7 @@
     </nav> -->
     <router-view />
     <el-backtop :bottom="30" style="width: 120px">
-      <div style="{
+      <div style="
         height: 100%;
         width: 100%;
         background-color: #f2f5f6;
@@ -14,7 +14,7 @@
         text-align: center;
         line-height: 40px;
         color: #1989fa;
-        }">回到顶部</div>
+        ">回到顶部</div>
     </el-backtop>
   </div>
 </template>

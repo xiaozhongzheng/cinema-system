@@ -1,53 +1,5 @@
 <template>
   <div id="#employee">
-    <div style="text-align: left">
-      <!-- <el-input
-        placeholder="请输入用户名"
-        v-model="username"
-        style="width: 20%;margin-bottom: 10px;"
-      >
-        <i
-          slot="suffix"
-          class="el-input__icon el-icon-search"
-        ></i>
-      </el-input>
-      <el-select
-        v-model="roleId"
-        placeholder="请选择身份"
-        style="margin-left: 20px"
-      >
-        <el-option
-          label="管理员"
-          value="2"
-        ></el-option>
-        <el-option
-          label="员工"
-          value="1"
-        ></el-option>
-
-      </el-select>
-      <el-select
-        v-model="status"
-        placeholder="请选择账号状态"
-        style="margin-left: 20px"
-      >
-        <el-option
-          label="启用"
-          value="1"
-        ></el-option>
-        <el-option
-          label="禁用"
-          value="0"
-        ></el-option>
-
-      </el-select> -->
-
-    </div>
-    <ImportEmployee
-      @handleSuccess="handleSuccess"
-      :dialogVisible.sync="dialogVisible"
-      v-if="dialogVisible"
-    ></ImportEmployee>
     <!-- 新增员工弹框 -->
     <el-dialog
       title="新增员工"
@@ -162,7 +114,12 @@
         >删除</el-button>
       </template>
     </SearchTableTemplate>
-
+    <ImportEmployee
+      @handleSuccess="handleSuccess"
+      :dialogVisible.sync="dialogVisible"
+      :importExcelApi="importExcelApi"
+      v-if="dialogVisible"
+    ></ImportEmployee>
   </div>
 </template>
 
@@ -187,6 +144,7 @@ export default {
   },
   data() {
     return {
+      importExcelApi: null,
       dialogVisible: false,
       employeeArr: [],
       username: "",
@@ -286,22 +244,13 @@ export default {
     };
   },
   created() {
-    // this.pageQueryEmployee();
     this.pageQueryApi = emp.pageQueryEmployee;
     this.showSearchForm = true;
+    this.importExcelApi = emp.importExcel;
   },
+
   methods: {
-    // async pageQueryEmployee() {
-    //   const res = await emp.pageQueryEmployee({
-    //     username: this.username,
-    //     roleId: this.roleId,
-    //     status: this.status,
-    //     pageNo: this.pageNo,
-    //     pageSize: this.pageSize,
-    //   });
-    //   this.employeeArr = res.records;
-    //   this.total = res.total;
-    // },
+
     handleSuccess() {
       this.$message.success("上传成功");
       this.$refs.searchTableTemplateRef.pageQueryData();

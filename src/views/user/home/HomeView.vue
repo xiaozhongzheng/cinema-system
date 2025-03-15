@@ -123,19 +123,23 @@ export default {
       // 获取排名前几的影片（根据评分排名）
       this.topFilmArr = await film.getFilmListByScore(this.num);
     },
-    toShowFilmDetail(id) {
+    toShowFilmDetail(filmId) {
       this.$router.push({
         name: "showDetail",
-        query: {
-          filmId: id,
+        path: `/user/showDetail`,
+        params: {
+          filmId,
         },
       });
+      // this.$router.push({
+      //   path: `/user/showDetail/${filmId}`
+      // });
     },
-    toBuyFilm(id) {
+    toBuyFilm(filmId) {
       this.$router.push({
         name: "buy",
         query: {
-          filmId: id,
+          filmId,
         },
       });
     },

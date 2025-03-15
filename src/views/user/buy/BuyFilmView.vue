@@ -270,7 +270,7 @@ export default {
     };
   },
   created() {
-    this.id = this.$route.query.filmId;
+    this.id = this.$route.params.filmId;
     // this.getUserContentByFilmId()
     this.getSingleFilmById();
     this.getDateArr();

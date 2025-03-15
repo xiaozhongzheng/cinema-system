@@ -3,14 +3,15 @@ import request from '@/utils/request'
 
 export function exportExcel(){
     return request({
-        url: `/export/excel`,
+        url: `/employee/export/excel`,
         method: 'get',
         responseType: 'blob'
     })
 }
+
 export function importExcel(data){
   return request({
-      url: `/import/excel`,
+      url: `/employee/import/excel`,
       method: 'post',
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -18,6 +19,7 @@ export function importExcel(data){
       data
   })
 }
+
 export function updateEmployeeById(data){
   return request({
       url: `/employee/edit`,

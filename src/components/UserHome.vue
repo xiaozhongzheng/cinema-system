@@ -11,8 +11,6 @@
         style="float: right;"
         @click="toShowAllFilm()"
       >
-
-
         全部
         <i class="el-icon-arrow-right"></i>
       </el-link>
@@ -22,6 +20,7 @@
       <li
         v-for="(item,i) in filmArr"
         v-if="i<=7"
+        :key="item.id"
         class="buyFilmes"
       >
         <img
@@ -37,14 +36,33 @@
         >购票</div>
       </li>
       <!--产生空盒子，用于解决flex布局问题 -->
-      <div
+      <!-- <div
         v-if="filmArr.length<7 "
         style="display: flex;"
       >
         <li v-for="k in (8-filmArr.length)%4">
         </li>
-      </div>
+      </div> -->
     </ul>
+    <el-row :gutter="10" style="background: pink">
+      <el-col
+        :span="6"
+        v-for="item in filmArr.slice(0,4)"
+        :key="item.id"
+      >
+      <img
+          :src="item.image"
+          width="100%"
+          height="246"
+          @click="toShowFilmDetail(item.id)"
+        >
+        <div
+          class="buyBtn"
+          @click="toBuyFilm(item.id)"
+        >购票</div>
+    </el-col>
+
+    </el-row>
   </div>
 </template>
 
@@ -65,10 +83,12 @@ export default {
     },
   },
   methods: {
+
     toShowFilmDetail(id) {
+      sessionStorage.setItem('key','value')
       this.$router.push({
         name: "showDetail",
-        query: {
+        params: {
           filmId: id,
         },
       });
@@ -76,7 +96,7 @@ export default {
     toBuyFilm(id) {
       this.$router.push({
         name: "buy",
-        query: {
+        params: {
           filmId: id,
         },
       });
@@ -141,5 +161,13 @@ li {
   ul li:nth-child(n + 5) {
     margin-top: 20px;
   }
+}
+.lightgreen-box {
+  background-color: lightgreen;
+  height: 24px;
+}
+.orange-box {
+  background-color: orange;
+  height: 24px;
 }
 </style>

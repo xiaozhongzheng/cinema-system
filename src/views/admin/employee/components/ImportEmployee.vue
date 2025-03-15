@@ -30,7 +30,6 @@
   </div>
 </template>
 <script>
-import { importExcel } from "@/api/employee";
 export default {
   name: "",
   props: {
@@ -38,6 +37,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    importExcelApi: {
+      type: Function,
+      default: null
+    }
   },
   data() {
     return {};
@@ -47,7 +50,7 @@ export default {
       console.log(event, "event");
       const formData = new FormData();
       formData.append("file", event.file);
-      await importExcel(formData);
+      await this.importExcelApi(formData);
       this.$emit("handleSuccess");
       this.$emit("update:dialogVisible", false);
     },

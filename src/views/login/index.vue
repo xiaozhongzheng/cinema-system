@@ -70,7 +70,7 @@
     </el-form>
   </div>
 </template>
-  
+
 <script>
 import { throttle,debounce } from "@/utils/optimization";
 export default {
@@ -108,7 +108,7 @@ export default {
       });
     },
     async handleLogin() {
-      await this.$store.dispatch("login", this.userForm);
+      await this.$store.dispatch("login", {...this.userForm});
       this.$message.success("登录成功");
       let toPath = "/admin";
       if (this.$store.getters.roleId == 0) {
@@ -121,11 +121,11 @@ export default {
     toRegisterView() {
       this.$router.push("/register");
     },
-    
+
   },
 };
 </script>
-  
+
 <style scoped>
 #login {
   width: 100%;

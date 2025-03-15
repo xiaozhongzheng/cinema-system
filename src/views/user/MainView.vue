@@ -128,12 +128,10 @@
       </el-dialog>
 
       <el-main>
-        <keep-alive>
-          <router-view
-            v-if="showView"
-            :titleName="title"
-          ></router-view>
-        </keep-alive>
+        <router-view
+          v-if="showView"
+          :titleName="title"
+        ></router-view>
       </el-main>
     </el-container>
 
@@ -161,7 +159,7 @@ export default {
     };
   },
   created() {
-    this.indexPath = this.$route.path
+    this.indexPath = this.$route.path;
     this.user = store.getters.userInfo;
     this.showView = true;
   },
@@ -174,7 +172,6 @@ export default {
     title() {
       this.toShowMovies();
     },
-    
   },
   computed: {
     getDiscount() {
@@ -230,7 +227,7 @@ export default {
       if (this.indexPath !== "/user/movies") {
         this.$router.push({
           name: "movies",
-        })
+        });
       }
     },
   },

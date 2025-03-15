@@ -248,7 +248,7 @@ export default {
     };
   },
   created() {
-    this.id = this.$route.query.filmId; // 获取影片的id
+    this.id = this.$route.params.filmId; // 获取影片的id
     this.getFilmAndComment();
   },
   methods: {
