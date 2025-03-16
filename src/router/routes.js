@@ -28,7 +28,7 @@ export const routes = [
   {
     path: '/admin',
     name: 'admin',
-    component: () => import('../views/admin/MainView.vue'),
+    component: () => import('../views/admin'),
     redirect: '/admin/home',
     children: [
       {

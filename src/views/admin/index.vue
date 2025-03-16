@@ -96,9 +96,7 @@
                   command="home_page"
                   icon="el-icon-user-solid"
                 >
-
                   个人中心
-
                 </el-dropdown-item>
 
                 <el-dropdown-item
@@ -121,20 +119,27 @@
 
     </el-container>
 
+    <MyCenterDialog v-if="visible" :visible.sync="visible"></MyCenterDialog>
   </div>
 </template>
-    
-    
+
+
 
 
 <script>
+import MyCenterDialog from './components/MyCenterDialog.vue';
+
 export default {
+  components: {
+    MyCenterDialog
+  },
   data() {
     return {
       indexPath: "",
       username: "",
       roleId: "",
       url: require("@/assets/logo.png"),
+      visible: false
     };
   },
   created() {
@@ -156,7 +161,7 @@ export default {
       await this.$store.dispatch('logout',data)
       this.$message.success('退出成功')
       this.$router.push("/login");
-      
+
     },
 
     handleCommand(command) {
@@ -168,17 +173,15 @@ export default {
         });
         return;
       }
-      if (this.$route.path != "/admin/home") {
-        this.$router.push('/admin')
-      }
+      this.visible = true
     },
 
     // 方法底部
   },
 };
 </script>
-    
-    
+
+
 <style scoped>
 .el-aside {
   color: #333;

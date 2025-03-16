@@ -7,12 +7,13 @@ import ElementUI from 'element-ui'
 
 // 加载element 组件库的样式
 import 'element-ui/lib/theme-chalk/index.css'
-
+import * as echarts from 'echarts'
 import axios from 'axios'
 import globalConstant from '@/utils/global-constant'
 Vue.prototype.$constant = globalConstant
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
+Vue.prototype.$echarts = echarts
 // 全局注册 element 组件库
 Vue.use(ElementUI)
 Vue.config.devtools = true
