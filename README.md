@@ -1,23 +1,21 @@
-# cinema-management-system
+# cinema-management-system（影票优选）
+## 项目简介
 
-## Project setup
+影票优选是一个实现了电影的管理以及用户购票的项目
+
+## 拉取项目后执行安装依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 运行项目
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 构建项目
 ```
 npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
 ```
 
 ### Customize configuration
