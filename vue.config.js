@@ -9,7 +9,7 @@ module.exports = defineConfig({
         target: `http://localhost:8888`, // 解决跨域问题
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/api': '' // 重定向
         }
       }
     },
