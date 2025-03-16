@@ -16,10 +16,9 @@
       </el-link>
     </div>
 
-    <ul>
+    <ul class="box">
       <li
-        v-for="(item,i) in filmArr"
-        v-if="i<=7"
+        v-for="item in handleFilmArr"
         :key="item.id"
         class="buyFilmes"
       >
@@ -44,7 +43,7 @@
         </li>
       </div> -->
     </ul>
-    <el-row :gutter="10" style="background: pink">
+    <!-- <el-row :gutter="10" style="background: pink">
       <el-col
         :span="6"
         v-for="item in filmArr.slice(0,4)"
@@ -62,7 +61,7 @@
         >购票</div>
     </el-col>
 
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 
@@ -81,6 +80,11 @@ export default {
       type: Number,
       default: 0,
     },
+  },
+  computed: {
+    handleFilmArr(){
+      return this.filmArr.slice(0,8)
+    }
   },
   methods: {
 
@@ -128,14 +132,11 @@ li {
     margin-bottom: 20px;
   }
   ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 20px;
   }
-  ul li {
-    width: 177px;
-    position: relative;
-  }
+
   ul li img {
     /* 去掉图片下面的空白 */
     display: block;
@@ -157,9 +158,6 @@ li {
   ul li .buyBtn:hover {
     background-color: red;
     color: white;
-  }
-  ul li:nth-child(n + 5) {
-    margin-top: 20px;
   }
 }
 .lightgreen-box {

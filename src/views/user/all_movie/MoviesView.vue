@@ -5,76 +5,51 @@
   >
     <div class="head">
 
-      <div style="height: 50%;height: 50px;padding-top: 20px;margin-left: 20px;">
-        <div style="width: 120px;float: left">
+      <div class="nav" >
+        <div >
           <span>类型：</span>
           <span
-            v-if="isAllType"
-            class="selecting"
-          >
-            全部
-          </span>
-          <span
-            v-else
             class="commonStyle"
+            :class="{selecting: activeType < 0 }"
             @click="selectTypeAll"
           >全部</span>
         </div>
-        <span v-for="(item,i) in typeObjArr">
-          <div style="width: 60px;float: left">
+        <template v-for="(item,index) in typeArr">
+          <div class="item">
             <span
-              v-if="!item.isSelect"
               class="commonStyle"
-              @click="updateTypeColor(i)"
-              :key="i"
+              :class="{selecting: activeType === index}"
+              @click="updateTypeColor(index)"
+              :key="item"
             >
-              {{ item.value }}
-            </span>
-            <span
-              v-else
-              class="selecting"
-              :key="i"
-            >
-              {{ item.value }}
+              {{ item }}
             </span>
           </div>
 
-        </span>
+        </template>
       </div>
-      <div style="height: 50%;height: 50px;margin-left: 20px">
-        <div style="width: 120px;float: left">
+      <div class="nav">
+        <div>
           <span>地区：</span>
           <span
-            v-if="isAllRegion"
-            class="selecting"
-          >
-            全部
-          </span>
-          <span
-            v-else
             class="commonStyle"
+            :class="{selecting: activeRegion < 0 }"
             @click="selectRegionAll"
           >全部</span>
+
         </div>
-        <span v-for="(item,i) in regionObjArr">
-          <div style="width: 60px;float: left">
+        <template v-for="(item,index) in regionArr">
+          <div  class="item">
             <span
-              v-if="!item.isSelect"
               class="commonStyle"
-              @click="updateRegionColor(i)"
-              :key="i"
+              :class="{selecting: activeRegion === index}"
+              @click="updateRegionColor(index)"
+              :key="item"
             >
-              {{ item.value }}
-            </span>
-            <span
-              v-else
-              class="selecting"
-              :key="i"
-            >
-              {{ item.value }}
+              {{ item}}
             </span>
           </div>
-        </span>
+        </template>
       </div>
     </div>
     <div v-if="filmArr.length!=0">
@@ -138,10 +113,6 @@ export default {
       isAllRegion: true,
       typeArr: this.$constant.filmTypeArr,
       regionArr: this.$constant.regionArr,
-      typeObjArr: [],
-      regionObjArr: [],
-      type: "",
-      region: "",
       filmArr: [
         // {
         //   id: 12,
@@ -154,10 +125,12 @@ export default {
         //   image: require("E:\\img\\电影管理系统图片\\2.jpg"),
         // },
       ],
+      activeType: -1,
+      activeRegion: -1
     };
   },
   created() {
-    this.init();
+    // this.init();
     this.pageQueryFilmList();
     // 使用节流的方法在每隔1秒发一次查询影片的请求
     this.fun = throttle(this.pageQueryFilmList,1000)
@@ -177,60 +150,29 @@ export default {
       const res = await pageQueryFilm({
         pageNo: this.pageNo,
         pageSize: this.pageSize,
-        type: this.type,
-        region: this.region,
+        type: this.activeType < 0 ? '' : this.activeType,
+        region: this.activeRegion < 0 ? '' : this.activeRegion ,
         title: this.titleName,
       });
       this.filmArr = res.records;
       this.total = res.total;
     },
-    init() {
-      const a = new Array();
-      this.typeArr.forEach((item) => {
-        a.push({
-          value: item,
-          isSelect: false,
-        });
-      });
-      const b = new Array();
-      this.regionArr.forEach(item => {
-        b.push({
-          value: item,
-          isSelect: false,
-        })
-      })
-      this.typeObjArr = a;
-      this.regionObjArr = b;
-    },
+
     updateTypeColor(index) {
-      this.clearTypeArr();
-      this.isAllType = false;
-      this.typeObjArr[index].isSelect = true;
-      this.type = index;
+      this.activeType = index
       this.pageQueryFilmList();
     },
     selectTypeAll() {
-      this.isAllType = true;
-      this.clearTypeArr();
-      this.type = "";
+      this.activeType = -1;
       this.pageQueryFilmList();
     },
-    clearTypeArr() {
-      this.typeObjArr.forEach(item => {
-        item.isSelect = false;
-      })
-    },
+
     updateRegionColor(index) {
-      this.clearRegionArr();
-      this.isAllRegion = false;
-      this.regionObjArr[index].isSelect = true;
-      this.region = index;
+      this.activeRegion = index;
       this.pageQueryFilmList();
     },
     selectRegionAll() {
-      this.isAllRegion = true;
-      this.clearRegionArr();
-      this.region = "";
+      this.activeRegion = -1;
       this.pageQueryFilmList();
     },
     clearRegionArr() {
@@ -275,6 +217,17 @@ ul li {
   margin: auto;
   border: 1px solid rgb(229, 229, 229);
 }
+.head .nav {
+  height: 50%;
+  margin-left: 20px;
+  display: flex;
+}
+.head .nav:first-child {
+  margin-top: 20px;
+}
+.head .item {
+  margin-left: 30px;
+}
 .selecting {
   color: white;
   background-color: red;
@@ -282,7 +235,6 @@ ul li {
   padding: 2px;
 }
 .commonStyle:hover {
-  color: red;
   cursor: pointer;
 }
 p {
