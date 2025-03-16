@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false, // 关闭eslint的检测，防止启动时老是报错
   devServer: {
-    port: 8088,
+    port: 8088, // 设置端口号
     proxy: {
       '/api': {
         target: `http://localhost:8888`, // 解决跨域问题
