@@ -1,9 +1,7 @@
 <template>
   <div id="main">
     <el-container>
-
       <el-header>
-
         <div class="head">
           <el-menu
             :default-active="indexPath"
@@ -125,6 +123,7 @@
             @click="recharge()"
           >充 值</el-button>
         </span>
+
       </el-dialog>
 
       <el-main>
@@ -132,6 +131,7 @@
           v-if="showView"
           :titleName="title"
         ></router-view>
+
       </el-main>
     </el-container>
 

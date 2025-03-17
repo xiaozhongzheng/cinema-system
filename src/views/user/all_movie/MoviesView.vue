@@ -183,7 +183,7 @@ export default {
     toShowFilmDetail(id) {
       this.$router.push({
         name: "showDetail",
-        query: {
+        params: {
           filmId: id,
         },
       });

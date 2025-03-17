@@ -89,7 +89,6 @@ export default {
   methods: {
 
     toShowFilmDetail(id) {
-      sessionStorage.setItem('key','value')
       this.$router.push({
         name: "showDetail",
         params: {

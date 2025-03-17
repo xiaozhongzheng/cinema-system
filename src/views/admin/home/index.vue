@@ -4,8 +4,12 @@
     id="home"
   >
     <div class="echarts">
+      <!-- 展示每部影片的购票数 -->
       <HomeBar type="bar"></HomeBar>
+      <!-- 展示每个月的销量 -->
       <HomeBar type="line"></HomeBar>
+      <!-- 展示不同类型的影片的票房数  -->
+      <home-pie></home-pie>
     </div>
 
 
@@ -16,9 +20,11 @@
 <script>
 
 import HomeBar from "./components/HomeBar.vue";
+import HomePie from './components/HomePie.vue';
 export default {
   components: {
     HomeBar,
+    HomePie,
   },
   data() {
     return {

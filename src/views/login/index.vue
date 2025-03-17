@@ -77,8 +77,8 @@ export default {
   data() {
     return {
       userForm: {
-        username: "",
-        password: "",
+        username: "xzzz",
+        password: "123",
         roleId: 0,
       },
       rules: {
@@ -111,7 +111,7 @@ export default {
       await this.$store.dispatch("login", {...this.userForm});
       this.$message.success("登录成功");
       let toPath = "/admin";
-      if (this.$store.getters.roleId == 0) {
+      if (this.$store.getters.roleId === 0) {
         toPath = "/user";
       }
       this.$router.push({

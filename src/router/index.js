@@ -4,9 +4,6 @@ import store from '@/store'
 import { routes } from './routes';
 Vue.use(VueRouter)
 
-let roleId = store.getters.roleId;
-
-
 const router = new VueRouter({
   mode: 'history',
   routes
@@ -23,19 +20,19 @@ VueRouter.prototype.push = function push(location) {
 const whiteList = ['/login','/404','/register']
 router.beforeEach(async (to, from, next) => {
   const token = store.getters.token
-  roleId = store.getters.roleId
+  const roleId = store.getters.roleId
   if(to.path === '/404'){
     next()
     return
   }
   if(token){ // 用户存在token
-    const flag = (roleId == 0 && to.path.includes('/admin')) || (roleId != 0 && to.path.includes('/user'))
+    const flag = (roleId === 0 && to.path.includes('/admin')) || (roleId !== 0 && to.path.includes('/user'))
     if(flag){
       // 防止 用户访问管理端页面或管理端访问用户端页面
       next('/404')
     }
     else if(to.path === '/login' || to.path === '/register'){
-      roleId == 0 ? next('/user') : next('/admin')
+      roleId === 0 ? next('/user') : next('/admin')
     }else{
       // 在每一次路由跳转前，获取用户的信息
       await store.dispatch('getUserInfoByRoleId',store.getters.roleId)

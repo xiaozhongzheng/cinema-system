@@ -5,15 +5,16 @@ let roleId = store.getters.roleId;
 export const routes = [
   {
     path: '/',
-    beforeEnter: (to, from, next) => {
-      if (roleId == 0) {
-        // 重定向到/user页面
-        next('/user')
-      } else {
-        // 重定向到/admin页面
-        next('/admin')
-      }
-    },
+    redirect: roleId === 0 ? '/user/home' : '/admin/home',
+    // beforeEnter: (to, from, next) => {
+    //   if (roleId == 0) {
+    //     // 重定向到/user页面
+    //     next('/user')
+    //   } else {
+    //     // 重定向到/admin页面
+    //     next('/admin')
+    //   }
+    // },
   },
   {
     path: '/login',
