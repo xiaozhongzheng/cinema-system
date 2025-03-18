@@ -1,20 +1,21 @@
 <template>
-  <div style="background: rgb(242, 246, 252);">
-    <p style="font-size: 30px">
-      {{ handelType == 'add' ? '新增影片' : '修改影片' }}
-    </p>
-    <el-form
-      :model="filmForm"
-      :rules="rules"
-      ref="filmForm"
-      label-width="150px"
-      style="text-align: left"
+  <div>
+    <el-dialog
+      width="1000px"
+      :title="handelType === 'add' ? '新增影片' : '修改影片'"
+      :visible="visible"
+      @close="handleClose"
     >
-      <div style="width: 100%;height: 60px">
+      <el-form
+        :model="filmForm"
+        :rules="rules"
+        ref="filmForm"
+        label-width="150px"
+        class="form"
+      >
         <el-form-item
           label="影片标题"
           prop="title"
-          style="width: 30%;float: left;"
         >
           <el-input
             v-model="filmForm.title"
@@ -25,7 +26,6 @@
         <el-form-item
           label="导演名"
           prop="director"
-          style="width: 30%;float: left"
         >
           <el-input
             v-model="filmForm.director"
@@ -35,25 +35,21 @@
         <el-form-item
           label="主演名"
           prop="actors"
-          style="width: 30%;float: left"
         >
           <el-input
             v-model="filmForm.actors"
             placeholder="请填写主演名(用逗号分隔)"
           ></el-input>
         </el-form-item>
-      </div>
 
-      <div style="width: 100%;height: 60px"><el-form-item
+        <el-form-item
           label="上映日期"
           prop="releaseDate"
-          style="width: 30%;float: left"
         >
           <el-date-picker
             v-model="filmForm.releaseDate"
             type="date"
             placeholder="选择日期"
-            style="width: 100%"
             value-format="yyyy-MM-dd"
           >
           </el-date-picker>
@@ -62,7 +58,6 @@
         <el-form-item
           label="类型"
           prop="type"
-          style="width: 30%;float: left"
         >
           <el-select
             v-model="filmForm.type"
@@ -81,7 +76,6 @@
         <el-form-item
           label="地区"
           prop="region"
-          style="width: 30%;float: left"
         >
           <el-select
             v-model="filmForm.region"
@@ -97,11 +91,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-      </div>
-      <div style="width: 100%;height: 60px">
         <el-form-item
           label="价格"
-          style="width: 30%;float: left"
           prop="price"
         >
           <el-input
@@ -113,48 +104,49 @@
         <el-form-item
           label="时长"
           prop="duration"
-          style="width: 30%;float: left"
         >
           <el-input
             v-model.number="filmForm.duration"
             placeholder="请填写影片时长(单位：分钟)"
           ></el-input>
         </el-form-item>
-      </div>
 
-      <el-form-item
-        label="图片"
-        prop="image"
-        style="width: 30%;"
-      >
-        <upload-image v-model="filmForm.image" showType = 'film'>
-        </upload-image>
-      </el-form-item>
+        <el-form-item
+          label="图片"
+          prop="image"
+        >
+          <upload-image
+            v-model="filmForm.image"
+            showType='film'
+          >
+          </upload-image>
+        </el-form-item>
 
-      <el-form-item
-        label="简介"
-        prop="plot"
-        style="width: 50%"
-      >
-        <el-input
-          type="textarea"
-          v-model="filmForm.plot"
-          placeholder="请输入剧情简介"
-          :autosize="{minRows:2,maxRows:30}"
-          style="overflow: hidden;"
-        ></el-input>
-      </el-form-item>
+        <el-form-item
+          label="简介"
+          prop="plot"
+        >
+          <el-input
+            type="textarea"
+            v-model="filmForm.plot"
+            placeholder="请输入剧情简介"
+            :autosize="{minRows:2,maxRows:30}"
+            style="overflow: hidden;width: 600px"
+          ></el-input>
+        </el-form-item>
 
-      <el-form-item>
+      </el-form>
+      <div>
         <el-button
           type="primary"
           @click="submitForm('filmForm')"
-        >{{ handelType == 'add' ? '添加' : '修改' }}</el-button>
-        <el-button @click="cancel">取消</el-button>
-      </el-form-item>
+        >
+        {{ handelType == 'add' ? '添加' : '修改' }}
+        </el-button>
+        <el-button @click="handleClose">取消</el-button>
+      </div>
 
-    </el-form>
-
+    </el-dialog>
 
   </div>
 
@@ -162,10 +154,20 @@
 
 <script>
 import { getFilmById, addFilm, updateFilm } from "@/api/film";
-import UploadImage from '@/components/UploadImage.vue'
+import UploadImage from "@/components/UploadImage.vue";
 export default {
+  props: {
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+    item: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   components: {
-    UploadImage
+    UploadImage,
   },
   data() {
     let validatePrice = (rule, value, callback) => {
@@ -234,7 +236,10 @@ export default {
   },
   created() {
     // localStorage.setItem("indexPath", "/admin/film");
-    const id = this.$route.query.id;
+    // const id = this.$route.query.id;
+    console.log("item", this.item);
+
+    const id = this.item.id;
     if (id) {
       // 表明这是新增操作
       this.handelType = "update";
@@ -245,7 +250,6 @@ export default {
     async getFilmById(id) {
       this.filmForm = await getFilmById(id);
     },
-
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -263,26 +267,36 @@ export default {
       const data = this.filmForm;
       await addFilm(data);
       this.$message.success("添加影片成功");
-      this.$router.push("/admin/film");
+      this.handleClose();
+      this.$emit("handleSuccess");
+      // this.$router.push("/admin/film");
     },
     async updateFilm() {
       await updateFilm(this.filmForm);
       this.$message.success("修改影片成功");
-      this.$router.push("/admin/film");
+      this.handleClose();
+      this.$emit("handleSuccess");
+      // this.$router.push("/admin/film");
     },
-    cancel() {
-      this.$router.push("/admin/film");
+    handleClose() {
+      this.$emit("update:visible", false);
     },
   },
 };
 </script>
 
 
-<style>
-
-
+<style lang="scss">
 .el-textarea__inner {
   /* 去除文本框的滚动条 */
   overflow: hidden;
+}
+.form {
+  text-align: left;
+  display: flex;
+  flex-wrap: wrap;
+  .el-input {
+    width: 300px;
+  }
 }
 </style>

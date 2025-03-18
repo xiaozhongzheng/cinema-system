@@ -86,12 +86,10 @@
     </div>
     <el-table
       :data="resultList"
-      style="width: 100%"
     >
       <template v-for="item in tableParamsList">
         <el-table-column
           v-if="item.text"
-          width="180"
           :label="item.label"
           :prop="item.prop"
         >
@@ -101,7 +99,6 @@
         </el-table-column>
         <el-table-column
           v-else-if="item.isImage"
-          width="180"
           :label="item.label"
           :prop="item.prop"
         >
@@ -114,7 +111,6 @@
         </el-table-column>
         <el-table-column
           v-else
-          width="180"
           :label="item.label"
           :prop="item.prop"
         >

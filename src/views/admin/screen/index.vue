@@ -33,7 +33,7 @@
       <el-button
         type="primary"
         style="margin-left: 20px"
-        v-if="roleId == 2"
+        v-if="roleId === 2"
         @click="showAddForm"
       >新增放映厅</el-button>
     </div>
@@ -163,7 +163,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        v-if="roleId == 2"
+        v-if="roleId === 2"
       >
 
         <template slot-scope="scope">
@@ -200,7 +200,7 @@
 
   </div>
 </template>
-  
+
 <script>
 import * as screen from "@/api/screen";
 export default {
@@ -242,12 +242,11 @@ export default {
       total: 0,
       handleType: "add", // 用于区分添加操作和修改操作
       title: "",
-      roleId: "",
+      roleId: this.$store.getters.roleId,
     };
   },
   created() {
     this.pageQueryScreen();
-    this.roleId = localStorage.getItem("roleId");
   },
   methods: {
     async pageQueryScreen() {
@@ -341,10 +340,9 @@ export default {
   },
 };
 </script>
-  
-  
-  
+
+
+
 <style scoped>
 </style>
-  
-  
+
