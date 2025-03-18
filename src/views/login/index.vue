@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       userForm: {
-        username: "xzzz",
+        username: "admin",
         password: "123",
         roleId: 0,
       },
@@ -110,12 +110,8 @@ export default {
     async handleLogin() {
       await this.$store.dispatch("login", {...this.userForm});
       this.$message.success("登录成功");
-      let toPath = "/admin";
-      if (this.$store.getters.roleId === 0) {
-        toPath = "/user";
-      }
       this.$router.push({
-        path: toPath,
+        path: this.$constant.rolePathArr[this.$store.getters.roleId]
       });
     },
     toRegisterView() {

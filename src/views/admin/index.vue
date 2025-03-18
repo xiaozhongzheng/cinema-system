@@ -19,48 +19,9 @@
                 style="width: 199px"
                 router
               >
-                <!-- 路径跳转 -->
-                <el-menu-item index="/admin/home">
-                  <i class="el-icon-s-home"></i>
-                  <span slot="title">个人中心</span>
-                </el-menu-item>
-                <el-menu-item
-                  index="/admin/employee"
-                  v-if="roleId == 2"
-                >
-                  <i class="el-icon-user-solid"></i>
-                  <span slot="title">员工管理</span>
-                </el-menu-item>
-                <el-menu-item index="/admin/screen">
-                  <i class="el-icon-c-scale-to-original"></i>
-                  <span slot="title">{{ roleId == 2 ? '放映厅管理' : '放映厅信息' }}</span>
-                </el-menu-item>
-                <el-menu-item index="/admin/film">
-                  <i class="el-icon-bangzhu"></i>
-                  <span slot="title">{{ roleId == 2 ? '影片管理' : '影片排片' }}</span>
-                </el-menu-item>
-                <el-menu-item
-                  index="/employee/schedule"
-                  v-if="roleId == 1"
-                >
-                  <i class="el-icon-s-help"></i>
-                  <span slot="title">我的排片</span>
-                </el-menu-item>
-
-                <el-menu-item index="/employee/query/allSchedule">
-                  <i class="el-icon-s-data"></i>
-                  <span slot="title">查看所有排片</span>
-                </el-menu-item>
-
-                <el-menu-item
-                  index="/admin/orders/show"
-                  v-if="roleId == 2"
-                >
-                  <i class="el-icon-tickets"></i>
-                  <span slot="title">查看所有订单</span>
-                </el-menu-item>
-
+                <side-bar-item v-for="route in routes" :key="route.path" :route="route"></side-bar-item>
               </el-menu>
+
             </el-col>
           </el-row>
         </el-aside>
@@ -79,7 +40,7 @@
             ></el-avatar>
 
             <span style="font-size: 24px;position: absolute;margin-left: 10px">
-              影院管理系统-{{ roleId == 2 ? '管理员' : '员工' }}
+              影院管理系统-{{ roleId === 2 ? '管理员' : '员工' }}
             </span>
 
             <el-dropdown
@@ -128,10 +89,12 @@
 
 <script>
 import MyCenterDialog from './components/MyCenterDialog.vue';
+import SideBarItem from './components/SideBarItem.vue';
 
 export default {
   components: {
-    MyCenterDialog
+    MyCenterDialog,
+    SideBarItem
   },
   data() {
     return {
@@ -147,6 +110,7 @@ export default {
     this.indexPath = this.$route.path
     this.roleId = this.$store.getters.roleId;
     this.username = this.$store.getters.username;
+    console.log(this.routes,'***')
   },
   watch: {
     $route(to,from){
@@ -154,7 +118,12 @@ export default {
       this.indexPath = to.path;
     }
   },
-
+  computed: {
+    // 获取所有的路由信息
+    routes(){
+      return this.$router.options.routes
+    }
+  },
   methods: {
     // 实现退出登录
     async logout(data) {

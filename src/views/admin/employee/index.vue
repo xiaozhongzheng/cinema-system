@@ -137,9 +137,8 @@ import * as emp from "@/api/employee";
 import FileSaver from "file-saver";
 import ImportEmployee from "./components/ImportEmployee.vue";
 export default {
+  name: 'employee',
   components: {
-    Pager: () => import("@/components/Pager.vue"),
-    SearchTableTemplate: () => import("@/components/SearchTableTemplate.vue"),
     ImportEmployee,
   },
   data() {

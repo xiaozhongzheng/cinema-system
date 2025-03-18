@@ -6,11 +6,13 @@ const host = 'localhost'
 
 const userRoleArr = ['','员工','管理员']
 const buttonStatusArr = ['禁用','启用']
+const rolePathArr = ['/user','/employee','/admin']
 // 导出变量
 export default {
     host,
     filmTypeArr, // 影片的类型
     regionArr, // 放映的地区
     userRoleArr,
-    buttonStatusArr
+    buttonStatusArr,
+    rolePathArr
 }
