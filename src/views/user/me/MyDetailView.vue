@@ -219,7 +219,7 @@ export default {
     updateEmployeePassword(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          this.pwdForm.roleId = localStorage.getItem("roleId");
+          this.pwdForm.roleId = this.$store.getters.roleId;
           await updatePassword(this.pwdForm);
           this.$message.success("密码修改成功");
           this.dialogPasswordVisible = false;

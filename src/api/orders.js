@@ -22,3 +22,24 @@ export function getOrdersList(){
         method: 'get',
     })
 }
+
+export function cancelOrders(id){
+  return request({
+      url:  `/orders/cancel/${id}`,
+      method: 'put',
+  })
+}
+
+export function getFilmBoxOfficeApi(){
+  return request({
+      url:  `/orders/film/box_office`,
+      method: 'get',
+  })
+}
+
+export function getMonthTicketApi(){
+  return request({
+      url:  `/orders/month/ticket`,
+      method: 'get',
+  })
+}

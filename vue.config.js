@@ -1,7 +1,15 @@
 const { defineConfig } = require('@vue/cli-service')
+const path = require('path');
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false, // 关闭eslint的检测，防止启动时老是报错
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'), // 确保 @ 指向 src 目录
+      },
+    },
+  },
   devServer: {
     port: 8088, // 设置端口号
     proxy: {

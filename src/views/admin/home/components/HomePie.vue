@@ -1,6 +1,6 @@
 <template>
   <div
-    class="pie"
+    class="common-echarts"
     ref="pieRef"
   >
   </div>
@@ -13,6 +13,10 @@ export default {
       type: String,
       default: "pie",
     },
+    itemArr: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {};
@@ -26,28 +30,30 @@ export default {
       // console.log(echartsInstance, "***");
       const option = {
         title: {
-          text: "饼状图",
-          left: "center",
+          text: "不同类型影片票房统计",
+          // left: "left",
+          textStyle: {
+            fontSize: 30,
+            color: "black",
+          },
+          left: 20, // 调整标题的位置
+          top: 20,
         },
         tooltip: {
           trigger: "item",
         },
         legend: {
           orient: "vertical",
-          left: "left",
+          left: "right",
+          padding: 20
         },
         series: [
           {
-            name: "好好好",
+            name: "",
             type: "pie",
             radius: "60%",
-            data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
-            ],
+            data: this.itemArr,
+            top: '40',
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,

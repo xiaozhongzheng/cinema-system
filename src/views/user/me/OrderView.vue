@@ -18,17 +18,14 @@
             height="100%"
             style="vertical-align: middle"
           >
-          <div
-            style="width: 55%;height: 90%;margin: 0 20px;"
-            class="main"
-          >
+          <div class="main">
             <p>{{ order.name }}</p>
             <span style="margin-right: 20px">
-              放映厅：{{ order.screenName }}
+              放映厅：{{ order.screenRoomName }}
             </span>
 
             <span>
-              座位：{{ order.seatNumber }}号
+              座位：{{ order.seatNumberStr }} 号
             </span>
             <br>
             <span>开场时间：</span>
@@ -41,12 +38,17 @@
             </span>
 
           </div>
-          <div style="height: 100%;line-height: 120px;">
-            <span style="width: 100px;display: inline-block">
-              {{ order.amount }} 元
+          <div class="btn">
+            <span class="amount">
+              {{ order.amount.toFixed(2) }} 元
             </span>
-            <span style="color: red">支付成功</span>
-
+            <el-tag :type="typeArr[order.status]" >{{ $constant.payStatus[order.status] }}</el-tag>
+            <el-button
+              :disabled="order.status !== 1"
+              type="danger"
+              style="height: 40px"
+              @click="cancelOrders(order)"
+            >取消订单</el-button>
           </div>
         </div>
       </el-checkbox-group>
@@ -62,9 +64,9 @@
   </div>
 
 </template>
-  
+
 <script>
-import { getOrdersList } from "@/api/orders";
+import { getOrdersList, cancelOrders } from "@/api/orders";
 export default {
   data() {
     return {
@@ -84,6 +86,7 @@ export default {
       //   },
       // ],
       orderArr: "",
+      typeArr: ['danger','','success']
     };
   },
   created() {
@@ -93,12 +96,39 @@ export default {
     async getOrdersByUserId() {
       this.orderArr = await getOrdersList();
     },
+    cancelOrders(order) {
+      if(new Date(order.startTime) < new Date()){
+        // 等影片开始播放了，就不能取消订单了
+        this.$message.error("取消失败,请在影片播放前取消订单！")
+        return
+      }
+      this.$confirm("此操作将删除该订单, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          await cancelOrders(order.id);
+          this.getOrdersByUserId();
+
+          this.$message({
+            type: "success",
+            message: "取消成功!",
+          });
+        })
+        .catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // });
+        });
+    },
   },
 };
 </script>
-  
-  
-  <style scoped>
+
+
+<style scoped lang="scss">
 #cart {
   text-align: left;
 }
@@ -112,12 +142,25 @@ p {
 }
 .ordersStyle {
   display: flex;
-
+  // justify-content: space-between;
   width: 100%;
   height: 120px;
   background-color: #fff;
   border: 1px solid rgb(234, 238, 243);
   margin-bottom: 20px;
   font-size: 20px;
+  .main {
+    width: 40%;
+    margin-left: 20px;
+  }
+  .btn {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    .amount {
+      color: red;
+    }
+  }
 }
 </style>

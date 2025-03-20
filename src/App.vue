@@ -19,6 +19,6 @@
   </div>
 </template>
 
-<style>
-
+<style lang="scss">
+@import '@/assets/styles/common.scss'
 </style>

@@ -138,7 +138,7 @@ export default {
   created() {
     this.getCartesByUserId();
     this.discount = this.$store.getters.userInfo?.discount;
-    
+
   },
   methods: {
     // async getUserDiscount() {
@@ -223,11 +223,11 @@ export default {
           image: item.image,
           scheduleId: item.scheduleId,
           seatNumber: item.seatNumber,
-          amount: item.price,
+          amount: item.price.toFixed(2),
           startTime: item.startTime,
         }
       })
-      return arr;
+      return arr || [];
     },
   }
 };

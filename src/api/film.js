@@ -57,8 +57,16 @@ export function deleteFilmById(id){
     return request({
         url: `/film/${id}`,
         method: 'delete',
-        
+
     })
+}
+
+export function getBoxOfficeByTypeApi(){
+  return request({
+      url: `/film/type/box_office`,
+      method: 'get',
+
+  })
 }
 
 export default {

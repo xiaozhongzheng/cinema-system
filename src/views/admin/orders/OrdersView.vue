@@ -44,7 +44,7 @@
 
       <el-table-column
         label="图片"
-        width="200"
+        width="150"
       >
         <template slot-scope="scope">
           <img
@@ -53,7 +53,18 @@
           >
         </template>
       </el-table-column>
-
+      <el-table-column
+        prop="screenRoomName"
+        label="放映厅名"
+        width="120"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="seatNumberStr"
+        label="座位号"
+        width="100"
+      >
+      </el-table-column>
       <el-table-column
         prop="username"
         label="用户名"
@@ -65,7 +76,7 @@
         width="100"
       >
         <template slot-scope="scope">
-          {{ scope.row.amount }} 元
+          <b>{{ scope.row.amount.toFixed(2) }} 元</b>
         </template>
       </el-table-column>
       <el-table-column
@@ -73,7 +84,10 @@
         width="100px"
       >
         <template slot-scope="scope">
-          {{ scope.row.status == 1 ? '支付成功' : '支付失败' }}
+          <el-tag v-if="scope.row.status == 1">已支付</el-tag>
+          <el-tag v-if="scope.row.status == 0" type="error">已取消</el-tag>
+          <el-tag v-if="scope.row.status == 2" type="success">已完成</el-tag>
+
         </template>
       </el-table-column>
 
@@ -109,7 +123,7 @@
 
   </div>
 </template>
-      
+
 <script>
 import { pageQueryOrders } from "@/api/orders";
 export default {
@@ -178,10 +192,9 @@ export default {
   },
 };
 </script>
-      
-      
-      
+
+
+
   <style scoped>
 </style>
-      
-      
+

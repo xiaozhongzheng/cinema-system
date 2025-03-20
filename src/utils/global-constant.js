@@ -7,6 +7,7 @@ const host = 'localhost'
 const userRoleArr = ['','员工','管理员']
 const buttonStatusArr = ['禁用','启用']
 const rolePathArr = ['/user','/employee','/admin']
+const payStatus = ['已取消','已支付','已完成']
 // 导出变量
 export default {
     host,
@@ -14,5 +15,6 @@ export default {
     regionArr, // 放映的地区
     userRoleArr,
     buttonStatusArr,
-    rolePathArr
+    rolePathArr,
+    payStatus
 }
