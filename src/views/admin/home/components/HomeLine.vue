@@ -16,6 +16,10 @@ export default {
     itemArr: {
       type: Array,
       default: () => []
+    },
+    echartsOption: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -32,41 +36,49 @@ export default {
       this.echartsInstance = this.$echarts.init(this.$refs.lineRef);
       // console.log(echartsInstance, "***");
       const option = {
-        title: {
-          text: '每月售票量统计',
-          textStyle: {
-            fontSize: 30,
-            color: "black",
-          },
-          left: 20, // 调整标题的位置
-          top: 20,
-        },
-        grid: {
-          // 调整坐标轴的位置
-          top: "20%",
-          left: "5%",
-          right: "6%",
-          bottom: "3%",
-          containLabel: true, // 距离是包含坐标轴上的文字
-        },
-        xAxis: {
-          type: "category",
-          axisTick: {
-            show: false, // 关闭横坐标的刻度标记
-          },
-          axisLabel: {
-            show: true, // 是否展示x轴文字
-            interval: 0 // 使x轴文字全部显示
-          }
-        },
-        yAxis: {
-          type: "value",
-        },
+        // title: {
+        //   text: '每月售票量统计',
+        //   textStyle: {
+        //     fontSize: 30,
+        //     color: "black",
+        //   },
+        //   left: 20, // 调整标题的位置
+        //   top: 20,
+        // },
+        title: {...this.echartsOption.title,text: '每月售票量统计'},
+        // grid: {
+        //   // 调整坐标轴的位置
+        //   top: "20%",
+        //   left: "5%",
+        //   right: "6%",
+        //   bottom: "3%",
+        //   containLabel: true, // 距离是包含坐标轴上的文字
+        // },
+        grid: this.echartsOption.grid,
+        xAxis: this.echartsOption.xAxis,
+        yAxis: this.echartsOption.yAxis,
+        // xAxis: {
+        //   type: "category",
+        //   axisTick: {
+        //     show: false, // 关闭横坐标的刻度标记
+        //   },
+        //   axisLabel: {
+        //     show: true, // 是否展示x轴文字
+        //     interval: 0 // 使x轴文字全部显示
+        //   }
+        // },
+        // yAxis: {
+        //   type: "value",
+        // },
         series: [
           {
             type: "line",
             label: {
-              show: true
+              show: true,
+              position: "top",
+              textStyle: {
+                color: 'black'
+              }
             }
           },
         ],

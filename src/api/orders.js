@@ -43,3 +43,10 @@ export function getMonthTicketApi(){
       method: 'get',
   })
 }
+
+export function getMonthAmountApi(){
+  return request({
+      url:  `/orders/month/amount`,
+      method: 'get',
+  })
+}

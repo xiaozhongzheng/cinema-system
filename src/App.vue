@@ -5,7 +5,7 @@
       <router-link to="/about">About</router-link>
     </nav> -->
     <router-view />
-    <el-backtop :bottom="30" style="width: 120px">
+    <!-- <el-backtop :bottom="30" style="width: 120px">
       <div style="
         height: 100%;
         width: 100%;
@@ -15,7 +15,7 @@
         line-height: 40px;
         color: #1989fa;
         ">回到顶部</div>
-    </el-backtop>
+    </el-backtop> -->
   </div>
 </template>
 

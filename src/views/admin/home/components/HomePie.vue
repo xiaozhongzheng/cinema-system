@@ -15,22 +15,25 @@ export default {
     },
     itemArr: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
-    return {};
+    return {
+      echartsInstance: {},
+    };
   },
   mounted() {
     this.initEcharts();
+    this.updateCharts();
   },
   methods: {
     initEcharts() {
-      const echartsInstance = this.$echarts.init(this.$refs.pieRef);
+      this.echartsInstance = this.$echarts.init(this.$refs.pieRef);
       // console.log(echartsInstance, "***");
       const option = {
         title: {
-          text: "不同类型影片票房统计",
+          text: "不同类型影片票房占比",
           // left: "left",
           textStyle: {
             fontSize: 30,
@@ -39,21 +42,18 @@ export default {
           left: 20, // 调整标题的位置
           top: 20,
         },
-        tooltip: {
-          trigger: "item",
-        },
+        tooltip: {},
         legend: {
           orient: "vertical",
           left: "right",
-          padding: 20
+          padding: 20,
         },
         series: [
           {
             name: "",
             type: "pie",
             radius: "60%",
-            data: this.itemArr,
-            top: '40',
+            top: "40",
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -61,18 +61,28 @@ export default {
                 shadowColor: "rgba(0, 0, 0, 0.5)",
               },
             },
+            label: {
+              show: true,
+              formatter: (data) =>
+                `${data.name} ${data.value}\n(${data.percent.toFixed(1)}%)`,
+            },
           },
         ],
       };
-      echartsInstance.setOption(option);
+      this.echartsInstance.setOption(option);
+    },
+    updateCharts() {
+      const option = {
+        series: [
+          {
+            data: this.itemArr,
+          },
+        ],
+      };
+      this.echartsInstance.setOption(option);
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.pie {
-  width: 500px;
-  height: 500px;
-  border: 1px solid black;
-}
 </style>

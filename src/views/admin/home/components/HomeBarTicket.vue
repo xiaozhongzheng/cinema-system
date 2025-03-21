@@ -17,6 +17,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    echartsOption: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -45,41 +49,14 @@ export default {
       // 初始化图表对象
       this.echartsInstance = this.$echarts.init(this.$refs.barRef, "light");
       const initOption = {
-        title: { // 调整标题样式
-          text: "影片票房统计",
-          textStyle: {
-            fontSize: 30,
-            color: "black",
-          },
-          left: 20, // 调整标题的位置
-          top: 20,
-        },
-        grid: {
-          // 调整坐标轴的位置
-          top: "20%",
-          left: "5%",
-          right: "6%",
-          bottom: "3%",
-          containLabel: true, // 距离是包含坐标轴上的文字
-        },
-        xAxis: {
-          type: "category",
-          axisTick: {
-            show: false, // 关闭横坐标的刻度标记
-            alignWithLabel: true, // 刻度在柱状图的中间位置
-          },
-          axisLabel: {
-            show: true, // 是否展示x轴文字
-            interval: 0 // 使x轴文字全部显示
-          }
-        },
-        yAxis: {
-          type: "value",
-        },
+        title: {...this.echartsOption.title,text: '影片票房统计'},
+        grid: this.echartsOption.grid,
+        xAxis: this.echartsOption.xAxis,
+        yAxis: this.echartsOption.yAxis,
         series: [
           {
             type: "bar",
-            barWidth: 50,
+            barWidth: 66,
             label: {
               show: true, // 展示每根柱子的value值
               position: "top", // 调整value值的方向
