@@ -101,7 +101,7 @@ export default {
       indexPath: "",
       username: "",
       roleId: "",
-      url: require("@/assets/logo.png"),
+      url: require("@/assets/images/logo.png"),
       visible: false
     };
   },

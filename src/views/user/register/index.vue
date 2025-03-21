@@ -155,7 +155,7 @@ export default {
 #register {
   width: 100%;
   height: 100%;
-  background-image: url("@/assets/register.png");
+  background-image: url("@/assets/images/register.png");
   background-size: contain;
   position: fixed;
   filter: blur();

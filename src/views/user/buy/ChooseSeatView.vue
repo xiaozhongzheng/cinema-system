@@ -121,7 +121,7 @@
         </div>
         <div style="width: 100%;height: 30px;">
           <img
-            :src="require('@/assets/screen.png')"
+            :src="require('@/assets/images/screen.png')"
             width="100%"
           >
         </div>

@@ -14,11 +14,6 @@ const service = axios.create({
 // const urlList = ['/user', '/employee', '/admin']
 // 请求拦截器
 service.interceptors.request.use((config) => {
-  // if (!commonList.includes(config.url)) {
-  //   // 非公共路径
-  //   config.baseURL += urlList[localStorage.getItem('roleId')]
-  // }
-  // const token = localStorage.getItem('token') || '';
   const token = store.getters.token || '';
   // 将token放在请求头中
   if (token) {

@@ -91,7 +91,7 @@ export default {
           { min: 3, max: 10, message: "密码的位数在3到10之间" },
         ],
       },
-      url: require("@/assets/logo.png"),
+      url: require("@/assets/images/logo.png"),
       refName: 'userForm'
     };
   },
@@ -126,7 +126,7 @@ export default {
 #login {
   width: 100%;
   height: 100%;
-  background-image: url("@/assets/login.jpg");
+  background-image: url("@/assets/images/login.jpg");
   background-color: black;
   background-size: cover;
   position: fixed;

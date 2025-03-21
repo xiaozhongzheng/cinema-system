@@ -10,7 +10,7 @@
 export default{
   methods: {
     toHome(){
-      this.$store.getters.roleId == 0 ? this.$router.push('/user') : this.$router.push('/admin')
+      this.$store.getters.roleId === 0 ? this.$router.push('/user') : this.$router.push('/admin')
     }
   }
 }
@@ -24,7 +24,7 @@ export default{
         height: 100%;
         align-items: center;
         justify-content: center;
-        background-image: url('@/assets/404.png') ;
+        background-image: url('@/assets/images/login.jpg') ;
         background-size: cover;
         position: fixed;
     }

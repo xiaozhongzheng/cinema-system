@@ -49,7 +49,7 @@
               </span>
             </p>
             <img
-              :src="require('@/assets/top1.png')"
+              :src="require('@/assets/images/top1.png')"
               style="position: absolute;top: 0;left: 0"
             >
           </div>
@@ -90,9 +90,9 @@ export default {
   data() {
     return {
       urlArr: [
-        require("@/assets/lun01.jpg"),
-        require("@/assets/lun02.jpg"),
-        require("@/assets/lun03.jpg"),
+        require("@/assets/images/lun01.jpg"),
+        require("@/assets/images/lun02.jpg"),
+        require("@/assets/images/lun03.jpg"),
       ],
       hotFilmArr: [],
       upcomingArr: [],
