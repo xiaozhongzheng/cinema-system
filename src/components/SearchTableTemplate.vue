@@ -9,7 +9,10 @@
         size="small"
       >
         <tamplate v-for="(item, index) in searchParamsList">
-          <el-form-item :label="item.label" :prop="item.prop">
+          <el-form-item
+            :label="item.label"
+            :prop="item.prop"
+          >
             <template v-if="item.type === 'input'">
               <el-input
                 v-model="searchForm[item.prop]"
@@ -84,9 +87,7 @@
         <slot name="handle"></slot>
       </el-form>
     </div>
-    <el-table
-      :data="resultList"
-    >
+    <el-table :data="resultList">
       <template v-for="item in tableParamsList">
         <el-table-column
           v-if="item.text"
@@ -104,9 +105,9 @@
         >
           <template slot-scope="scope">
             <img
-            :src="scope.row.image"
-            height="120px"
-          >
+              :src="scope.row.image"
+              height="120px"
+            >
           </template>
         </el-table-column>
         <el-table-column
@@ -126,7 +127,7 @@
           slot-scope="scope"
           v-if="scope.row.username!='admin'"
         >
-        <!-- 采用作用域插槽，存放查看，修改，删除等功能的按钮 -->
+          <!-- 采用作用域插槽，存放查看，修改，删除等功能的按钮 -->
           <slot
             name="columnHandle"
             :row="scope.row"
@@ -147,8 +148,9 @@
 </template>
 
 <script>
+import { debounce } from "@/utils/optimization";
 export default {
-  name: 'SearchTableTemplate',
+  name: "SearchTableTemplate",
   components: {
     Pager: () => import("@/components/Pager.vue"),
   },
@@ -196,15 +198,26 @@ export default {
     this.pageQueryData();
   },
   methods: {
-    async pageQueryData() {
-      const res = await this.tableListApi({
+    // async pageQueryData(){
+    //   const res = await this.tableListApi({
+    //     ...this.extraParams,
+    //     ...this.pageParams.pager,
+    //     ...this.searchForm,
+    //   });
+    //   this.resultList = res.records;
+    //   this.pageParams.total = res.total;
+    // },
+    pageQueryData: debounce(function(){
+      this.tableListApi({
         ...this.extraParams,
         ...this.pageParams.pager,
-        ...this.searchForm
-      });
-      this.resultList = res.records;
-      this.pageParams.total = res.total;
-    },
+        ...this.searchForm,
+      }).then(res => {
+        this.resultList = res.records;
+        this.pageParams.total = res.total;
+      })
+    },300),
+
     handleSizeChange(val) {
       this.pageParams.pager.pageSize = val;
       this.pageQueryData();
@@ -219,13 +232,13 @@ export default {
       });
       console.log(this.searchForm);
     },
-    reset(){
-      this.$refs['searchFormRef'].resetFields();
-      this.pageParams.pager['pageNo'] = 1
-      this.pageParams.pager['pageSize'] = 5
+    reset() {
+      this.$refs["searchFormRef"].resetFields();
+      this.pageParams.pager["pageNo"] = 1;
+      this.pageParams.pager["pageSize"] = 5;
 
-      this.pageQueryData()
-    }
+      this.pageQueryData();
+    },
   },
 };
 </script>

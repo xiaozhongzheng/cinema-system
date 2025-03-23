@@ -50,7 +50,6 @@ export default {
       console.log(event, "event");
       const formData = new FormData();
       formData.append("file", event.file);
-      await this.importExcelApi(formData);
       this.$emit("handleSuccess");
       this.$emit("update:dialogVisible", false);
     },

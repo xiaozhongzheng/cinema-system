@@ -6,13 +6,16 @@
  * @param {*} delay 表示延迟的时间
  */
 export function debounce(fn, delay) {
-    let timer = null
-    return function () {
-        if (timer) {
-            clearTimeout(timer)
-        }
-        timer = setTimeout(fn, delay)
+  let timer = null
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer)
     }
+    timer = setTimeout(() => {
+      fn.apply(this, args)
+    }, delay)
+
+  }
 }
 
 /**
@@ -21,18 +24,18 @@ export function debounce(fn, delay) {
  * @param {*} time 表示间隔的时间
  */
 export function throttle(fn, time) {
-    let valid = true
+  let valid = true
 
-    return function () {
-        if (!valid) {
-            return
-        }
-        valid = false
-        setTimeout(function () {
-            fn()
-            valid = true
-        }, time)
+  return function () {
+    if (!valid) {
+      return
     }
+    valid = false
+    setTimeout(function () {
+      fn()
+      valid = true
+    }, time)
+  }
 }
 
 

@@ -1,17 +1,14 @@
 import axios from 'axios'
-// import store from '@/store'
 import { Message } from 'element-ui'
 import router from '@/router'
 import store from '@/store'
-
+import { debounce } from './optimization'
 // 创建并初始化axios实例
 const service = axios.create({
   baseURL: '/api', // 基础地址
   timeout: 10000 // 请求时间超过10s就失败
 })
-// // 公共接口的路径
-// const commonList = ['/login', '/upload', '/logout', '/password']
-// const urlList = ['/user', '/employee', '/admin']
+
 // 请求拦截器
 service.interceptors.request.use((config) => {
   const token = store.getters.token || '';
@@ -19,13 +16,11 @@ service.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = token
   }
-  return config
+  return Promise.resolve(config)
 }, (error) => {
   // 失败执行promise
   return Promise.reject(error)
 })
-
-
 
 // 响应拦截器
 service.interceptors.response.use((res) => {
