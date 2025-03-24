@@ -11,6 +11,7 @@
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
+        class="pageStyle"
       >
       </el-pagination>
     </div>
@@ -55,3 +56,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .block {
+    display: flex;
+    justify-content: center;
+  }
+</style>

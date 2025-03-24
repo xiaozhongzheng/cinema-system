@@ -5,7 +5,6 @@
         {{status === 2 ? '正在热映' : '即将上映'}}
         ({{ filmArr.length }})
       </span>
-
       <el-link
         type="primary"
         style="float: right;"
@@ -16,33 +15,14 @@
       </el-link>
     </div>
 
-    <ul class="box">
-      <li
+    <div class="box">
+      <template
         v-for="item in handleFilmArr"
-        :key="item.id"
-        class="buyFilmes"
       >
-        <img
-          :src="item.image"
-          width="100%"
-          height="246"
-          @click="toShowFilmDetail(item.id)"
-        >
-        <!-- <span style="position: absolute;bottom: 50px;left: 10px;color: white;font-weight: bold;">{{ item.title }}</span> -->
-        <div
-          class="buyBtn"
-          @click="toBuyFilm(item.id)"
-        >购票</div>
-      </li>
-      <!--产生空盒子，用于解决flex布局问题 -->
-      <!-- <div
-        v-if="filmArr.length<7 "
-        style="display: flex;"
-      >
-        <li v-for="k in (8-filmArr.length)%4">
-        </li>
-      </div> -->
-    </ul>
+        <FilmItem :item="item" :key="item.id"></FilmItem>
+      </template>
+
+    </div>
     <!-- <el-row :gutter="10" style="background: pink">
       <el-col
         :span="6"
@@ -67,7 +47,11 @@
 
 
 <script>
+import FilmItem from '@/views/user/components/FilmItem.vue';
 export default {
+  components: {
+    FilmItem
+  },
   data() {
     return {};
   },
@@ -87,23 +71,6 @@ export default {
     }
   },
   methods: {
-
-    toShowFilmDetail(id) {
-      this.$router.push({
-        name: "showDetail",
-        params: {
-          filmId: id,
-        },
-      });
-    },
-    toBuyFilm(id) {
-      this.$router.push({
-        name: "buy",
-        params: {
-          filmId: id,
-        },
-      });
-    },
     toShowAllFilm() {
       this.$router.push({
         name: "movies",
@@ -115,13 +82,7 @@ export default {
 
 
 <style scoped lang="less">
-ul {
-  margin: 0;
-  padding: 0;
-}
-li {
-  list-style: none;
-}
+
 #filmHome {
   margin-top: 20px;
   .head {
@@ -130,34 +91,12 @@ li {
     line-height: 30px;
     margin-bottom: 20px;
   }
-  ul {
+  .box {
     display: grid;
     grid-template-columns: repeat(4,1fr);
     gap: 20px;
   }
 
-  ul li img {
-    /* 去掉图片下面的空白 */
-    display: block;
-  }
-  .buyFilmes:hover {
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    transform: scale(1.1);
-  }
-  ul li .buyBtn {
-    color: red;
-    width: 100%;
-    height: 35px;
-    line-height: 35px;
-    background-color: #fff;
-    border: 1px solid pink;
-    border-top: 0;
-  }
-  ul li .buyBtn:hover {
-    background-color: red;
-    color: white;
-  }
 }
 .lightgreen-box {
   background-color: lightgreen;

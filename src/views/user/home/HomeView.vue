@@ -85,7 +85,7 @@
 
 <script>
 import film from "@/api/film";
-import UserHome from '@/components/UserHome.vue';
+import UserHome from './components/UserHome.vue';
 export default {
   data() {
     return {

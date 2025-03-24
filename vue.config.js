@@ -41,6 +41,8 @@ module.exports = defineConfig({
           },
         },
       ]
-    }
+    },
+    devtool: "cheap-module-source-map"
+
   }
 })
