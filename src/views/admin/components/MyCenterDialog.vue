@@ -1,26 +1,10 @@
 <template>
   <div class="my-center">
-    <el-dialog
-      title="个人中心"
-      :visible="visible"
-      @close="handleClose"
-    >
-      <el-descriptions
-        class="margin-top"
-        :column="2"
-        title="个人信息"
-        border
-      >
-
+    <el-dialog width="60%" title="个人中心" :visible="visible" :close-on-click-modal="false" @close="handleClose">
+      <el-descriptions class="margin-top content" :column="2" title="" border>
         <template slot="extra">
-          <el-button
-            type="warning"
-            @click="passwordDialog"
-          >修改密码</el-button>
-          <el-button
-            type="info"
-            @click="edit"
-          >修改个人信息</el-button>
+          <el-button type="warning" @click="passwordDialog">修改密码</el-button>
+          <el-button type="info" @click="edit">修改个人信息</el-button>
         </template>
 
         <!-- 显示用户信息模块 -->
@@ -44,14 +28,14 @@
             <i class="el-icon-s-custom"></i>
             身份
           </template>
-          {{ employee.roleId === 2 ? '管理员':'员工' }}
+          {{ employee.roleId === 2 ? '管理员' : '员工' }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets"></i>
             状态
           </template>
-          {{ employee.status === 1 ? '启用':'禁用' }}
+          {{ employee.status === 1 ? '启用' : '禁用' }}
         </el-descriptions-item>
 
         <el-descriptions-item>
@@ -70,101 +54,40 @@
         </el-descriptions-item>
 
       </el-descriptions>
-      <el-dialog
-        title="修改个人信息"
-        :visible.sync="dialogFormVisible"
-      >
-        <el-form
-          :model="empForm"
-          :rules="rules"
-          ref="empForm"
-        >
-          <el-form-item
-            label="用户名"
-            :label-width="formLabelWidth"
-            prop="username"
-            style="width: 60%;"
-          >
-            <el-input
-              v-model="empForm.username"
-              autocomplete="off"
-            ></el-input>
+      <el-dialog :close-on-click-modal="false" title="修改个人信息" :visible.sync="dialogFormVisible" append-to-body>
+        <el-form :model="empForm" :rules="rules" ref="empForm">
+          <el-form-item label="用户名" :label-width="formLabelWidth" prop="username" style="width: 60%;">
+            <el-input v-model="empForm.username" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item
-            label="电话号码"
-            :label-width="formLabelWidth"
-            prop="phone"
-            style="width: 60%;"
-          >
-            <el-input
-              v-model="empForm.phone"
-              autocomplete="off"
-            ></el-input>
+          <el-form-item label="电话号码" :label-width="formLabelWidth" prop="phone" style="width: 60%;">
+            <el-input v-model="empForm.phone" autocomplete="off"></el-input>
           </el-form-item>
 
         </el-form>
 
-        <div
-          slot="footer"
-          class="dialog-footer"
-        >
+        <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="editEmployee('empForm')"
-          >修改</el-button>
+          <el-button type="primary" @click="editEmployee('empForm')">修改</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog
-        title="修改密码"
-        :visible.sync="dialogPasswordVisible"
-        @close="resetForm"
-      >
+      <el-dialog :close-on-click-modal="false" title="修改密码" append-to-body :visible.sync="dialogPasswordVisible" @close="resetForm">
 
-        <el-form
-          :model="pwdForm"
-          :rules="pwdRules"
-          ref="pwdForm"
-        >
-          <el-form-item
-            label="原密码"
-            :label-width="formLabelWidth"
-            prop="oldPassword"
-            style="width: 60%;"
-          >
-            <el-input
-              v-model="pwdForm.oldPassword"
-              placeholder="请输入原密码"
-              autocomplete="off"
-            ></el-input>
+        <el-form :model="pwdForm" :rules="pwdRules" ref="pwdForm">
+          <el-form-item label="原密码" :label-width="formLabelWidth" prop="oldPassword" style="width: 60%;">
+            <el-input v-model="pwdForm.oldPassword" placeholder="请输入原密码" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item
-            label="新密码"
-            :label-width="formLabelWidth"
-            prop="newPassword"
-            style="width: 60%;"
-          >
-            <el-input
-              v-model="pwdForm.newPassword"
-              autocomplete="off"
-              placeholder="请输入新密码"
-            ></el-input>
+          <el-form-item label="新密码" :label-width="formLabelWidth" prop="newPassword" style="width: 60%;">
+            <el-input v-model="pwdForm.newPassword" autocomplete="off" placeholder="请输入新密码"></el-input>
           </el-form-item>
 
         </el-form>
 
-        <div
-          slot="footer"
-          class="dialog-footer"
-        >
+        <div slot="footer" class="dialog-footer">
           <el-button @click="dialogPasswordVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="updateEmployeePassword('pwdForm')"
-          >修改</el-button>
+          <el-button type="primary" @click="updateEmployeePassword('pwdForm')">修改</el-button>
         </div>
       </el-dialog>
     </el-dialog>
@@ -231,8 +154,9 @@ export default {
     };
   },
   created() {
-    this.id = localStorage.getItem("id");
+    // this.id = localStorage.getItem("id");
     this.employee = this.$store.getters.userInfo;
+
   },
   mounted() {
 
@@ -285,4 +209,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.my-center {
+  .content {
+    margin-bottom: 100px;
+  }
+}
 </style>
