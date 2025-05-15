@@ -41,7 +41,7 @@ export default {
 .filmItem {
   display: flex;
   flex-direction: column;
-  height: 280px;
+  // height: 280px;
   &:hover {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
     cursor: pointer;
@@ -50,13 +50,14 @@ export default {
 
   .image {
     width: 100%;
+    height: 250px;
     display: block;
   }
 
   .buyBtn {
     width: 100%;
+    height: 40px;
     color: red;
-    flex: 1;
     background-color: #fff;
     border: 1px solid #e7e7e7;
     border-top: 0;
