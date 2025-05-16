@@ -12,33 +12,34 @@
         <user-home :filmArr="upcomingArr" :status="1"></user-home>
       </div>
 
-      <div class="right">
-        <h1>热门榜单Top{{ num }}</h1>
-        <div class="top01" v-if="topFilmArr.length != 0" @click="toShowFilmDetail(topFilmArr[0].id)">
-          <img :src="topFilmArr[0].image" height="100%" style="vertical-align: middle;float: left;">
-          <div style="width: 60%;height: 100%;
-  float: left;padding-left: 20px;font-size: 20px">
-            <p style="margin-top: 20%">{{ topFilmArr[0].title }}</p>
-            <p>
-              <span style="color: rgb(231, 189, 94);">
+      <article>
+        <div class="title">热门榜单Top{{ num }}</div>
+        <div v-if="topFilmArr.length" class="rankList">
+          <div class="top01" @click="toShowFilmDetail(topFilmArr[0].id)">
+            <img :src="topFilmArr[0].image">
+            <div class="box">
+              <span>{{ topFilmArr[0].title }}</span>
+              <span class="score">
                 {{ topFilmArr[0].averageScore * 2 }} 分
               </span>
-            </p>
-            <img :src="require('@/assets/images/top1.png')" style="position: absolute;top: 0;left: 0">
+              <img class="top1-icon" :src="require('@/assets/images/top1.png')">
+            </div>
+          </div>
+          <div v-for="(film, i) in topFilmArr.slice(1)" class="filmTop6" @click="toShowFilmDetail(film.id)">
+              <div>
+                <span class="rank">{{ i + 2 }}</span>
+                <span class="name"> {{ film.title }}</span>
+              </div>
+              <span class="score" v-if="film.averageScore != null">
+                {{ film.averageScore * 2 }} 分
+              </span>
+              <span v-else>
+                暂无评分
+              </span>
           </div>
         </div>
-        <p style="width: 100%;height: 50px;line-height: 50px;" v-for="(film, i) in topFilmArr" v-if="i != 0"
-          class="filmTop6" @click="toShowFilmDetail(film.id)">
-          <i style="color: rgb(207, 207, 207);font-size: 22px;">{{ i + 1 }}</i>
-          <span style="font-size: 16px;margin-left: 10px">{{ film.title }}</span>
-          <span style="float: right;color: rgb(231, 189, 94);font-size: 18px" v-if="film.averageScore != null">
-            {{ film.averageScore * 2 }} 分
-          </span>
-          <span style="float: right;color: rgb(231, 189, 94);font-size: 18px" v-else>
-            暂无评分
-          </span>
-        </p>
-      </div>
+
+      </article>
     </div>
 
   </div>
@@ -125,13 +126,86 @@ export default {
     width: 65%;
   }
 
-  .right {
-    /* float: left; */
-    width: 35%;
+  article {
+    // width: 35%;
+    flex: 1;
     text-align: left;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+
+    .title {
+      color: rgb(226, 107, 64);
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .rankList {
+      display: flex;
+      gap: 20px;
+      flex-direction: column;
+
+      .score {
+        font-size: 18px;
+        color: rgb(226, 190, 108);
+      }
+
+      .top01 {
+        display: flex;
+        gap: 20px;
+        position: relative;
+        border: 1px solid pink;
+
+        &>img {
+          width: 120px;
+        }
+
+        .top1-icon {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+
+        .box {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+          font-size: 18px;
+        }
+
+        &:hover {
+          background-color: rgb(234, 238, 243);
+          cursor: pointer;
+        }
+      }
+
+      .filmTop6 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .rank {
+          color: rgb(207, 207, 207);
+          font-size: 22px;
+        }
+
+        .name {
+          font-size: 16px;
+          margin-left: 10px
+        }
+
+        &:hover {
+          background-color: rgb(234, 238, 243);
+          cursor: pointer;
+        }
+      }
+    }
+
+
   }
 }
+
 .mainHome .el-carousel__item h3 {
   color: #475669;
   font-size: 18px;
@@ -161,15 +235,5 @@ export default {
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
-}
-
-.filmTop6:hover {
-  background-color: rgb(234, 238, 243);
-  cursor: pointer;
-}
-
-.top01:hover {
-  background-color: rgb(234, 238, 243);
-  cursor: pointer;
 }
 </style>

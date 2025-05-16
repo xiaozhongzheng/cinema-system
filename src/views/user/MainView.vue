@@ -8,8 +8,9 @@
             <span> 影院购票界面</span>
           </div>
           <el-menu :default-active="indexPath" class="el-menu-demo" mode="horizontal" router>
-            <el-menu-item index="/user/home">首页</el-menu-item>
-            <el-menu-item index="/user/movies">电影</el-menu-item>
+            <el-menu-item v-for="(item, index) in menuList" :index="item.path"
+              :class="{ active: activeIndex === index }" :key="item.name" @click="activeIndex = index">{{ item.name
+              }}</el-menu-item>
           </el-menu>
           <el-input v-model="title" placeholder="请输入要查询的电影名" style="width: 20%;"></el-input>
 
@@ -66,6 +67,25 @@ export default {
   data() {
     return {
       url: require("@/assets/images/logo.png"),
+      menuList: [
+        {
+          name: '首页',
+          path: '/user/home',
+        },
+        {
+          name: '电影大全',
+          path: '/user/movies',
+        },
+        {
+          name: '电影大全',
+          path: '/user/movies',
+        },
+        {
+          name: '电影大全',
+          path: '/user/movies',
+        },
+      ],
+      activeIndex: 0,
       title: "",
       indexPath: "",
       dialogVisible: false,
@@ -158,6 +178,7 @@ export default {
 
 <style scoped lang="scss">
 $height: 80px;
+
 #main {
   width: 100vw;
   height: 100vh;
@@ -181,7 +202,7 @@ $height: 80px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-
+      gap: 20px;
       .title {
         display: flex;
         align-items: center;
@@ -191,11 +212,25 @@ $height: 80px;
       }
 
       .el-menu-demo {
+        display: flex;
+        justify-content: flex-end;
+        flex: 1;
         height: 100%;
-        width: 200px;
         border: 0;
-        margin-left: 250px;
         background: transparent;
+        &>li {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          font-size: 16px;
+          color: black;
+          border: 0;
+
+        }
+        .active {
+          background-color: skyblue;
+          color: white;
+        }
       }
 
       .right {
