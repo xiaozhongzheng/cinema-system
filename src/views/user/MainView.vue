@@ -12,7 +12,7 @@
               :class="{ active: activeIndex === index }" :key="item.name" @click="activeIndex = index">{{ item.name
               }}</el-menu-item>
           </el-menu>
-          <el-input v-model="title" placeholder="请输入要查询的电影名" style="width: 20%;"></el-input>
+          <el-input v-model="title" placeholder="请输入要查询的电影名" class="search"></el-input>
 
           <el-button type="success" @click="dialogVisible = true">充值</el-button>
 
@@ -180,8 +180,8 @@ export default {
 $height: 80px;
 
 #main {
-  width: 100vw;
-  height: 100vh;
+  width: 1440px;
+  min-height: 100vh;
   font-size: 14px;
   position: relative;
 
@@ -231,6 +231,10 @@ $height: 80px;
           background-color: skyblue;
           color: white;
         }
+      }
+
+      .search {
+        width: 250px;
       }
 
       .right {
