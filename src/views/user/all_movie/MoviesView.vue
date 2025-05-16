@@ -1,38 +1,30 @@
 <template>
-  <div id="movies" style="margin-top: 3%">
-    <div class="head">
-
+  <div id="movies">
+    <header>
       <div class="nav">
-        <div>
-          <span>类型：</span>
-          <span class="commonStyle" :class="{ selecting: activeType < 0 }" @click="selectTypeAll">全部</span>
-        </div>
+        <span class="label">类型：</span>
+        <span class="commonStyle" :class="{ selecting: activeType < 0 }" @click="selectTypeAll">全部</span>
         <template v-for="(item, index) in typeArr">
-          <div class="item">
-            <span class="commonStyle" :class="{ selecting: activeType === index }" @click="updateTypeColor(index)"
-              :key="item">
-              {{ item }}
-            </span>
-          </div>
+          <span :key="item" class="commonStyle" :class="{ selecting: activeType === index }"
+            @click="updateTypeColor(index)">
+            {{ item }}
+          </span>
 
         </template>
+
       </div>
       <div class="nav">
-        <div>
-          <span>地区：</span>
-          <span class="commonStyle" :class="{ selecting: activeRegion < 0 }" @click="selectRegionAll">全部</span>
-
-        </div>
+        <span class="label">地区：</span>
+        <span class="commonStyle" :class="{ selecting: activeRegion < 0 }" @click="selectRegionAll">全部</span>
         <template v-for="(item, index) in regionArr">
-          <div class="item">
-            <span class="commonStyle" :class="{ selecting: activeRegion === index }" @click="updateRegionColor(index)"
-              :key="item">
-              {{ item }}
-            </span>
-          </div>
+          <span :key="item" class="commonStyle" :class="{ selecting: activeRegion === index }"
+            @click="updateRegionColor(index)">
+            {{ item }}
+          </span>
         </template>
       </div>
-    </div>
+    </header>
+
     <div v-if="filmArr.length">
       <div class="showFilm">
         <template v-for="film in filmArr">
@@ -40,7 +32,8 @@
         </template>
       </div>
       <div class="page">
-        <Pager :pageNo="pageNo" :pageSize="pageSize" :total="total" :pageSizes="[18]" @changePageNo="handleCurrentChange">
+        <Pager :pageNo="pageNo" :pageSize="pageSize" :total="total" :pageSizes="[18]"
+          @changePageNo="handleCurrentChange">
         </Pager>
       </div>
     </div>
@@ -150,7 +143,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style scoped lang="scss">
 ul li {
   list-style: none;
 }
@@ -162,58 +155,53 @@ ul li {
   text-align: left;
   background-color: rgb(244, 246, 248);
   /* box-sizing: border-box; */
-  padding: 0 20px;
+  padding: 20px;
 
-}
+  &>header {
+    width: 100%;
+    height: 100px;
+    padding: 0;
 
-#movies .head {
-  width: 100%;
-  height: 100px;
-  /* background-color: #fff; */
-  border: 1px solid rgb(229, 229, 229);
-  padding: 0;
-  margin-left: 0;
-}
+    .label {
+      color: #999999;
+    }
 
-.head .nav {
-  height: 50%;
-  /* margin-left: 20px; */
-  display: flex;
-}
+    .nav {
+      height: 50%;
+      display: flex;
+      gap: 20px;
 
-.head .nav:first-child {
-  margin-top: 20px;
-}
+    }
 
-.head .item {
-  margin-left: 30px;
-}
+    .selecting {
+      color: white;
+      background-color: red;
+      border-radius: 15px;
+    }
 
-.selecting {
-  color: white;
-  background-color: red;
-  border-radius: 15px;
-  padding: 2px;
-}
+    .commonStyle {
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
 
-.commonStyle:hover {
-  cursor: pointer;
-}
+      &:hover {
+        cursor: pointer;
+      }
+    }
 
-p {
-  margin: 0;
-  padding: 0;
-}
+  }
 
-.showFilm {
-  height: 960px;
-  margin-top: 3%;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  /* grid-template-rows: repeat(6,260px); */
-  grid-gap: 20px;
-}
-.page {
-  margin: auto;
+  .showFilm {
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    /* grid-template-rows: repeat(6,260px); */
+    grid-gap: 20px;
+  }
+
+  .page {
+    margin: auto;
+  }
+
 }
 </style>
