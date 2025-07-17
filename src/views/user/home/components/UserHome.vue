@@ -1,24 +1,18 @@
 <template>
   <div id="filmHome">
     <div class="head">
-      <span style="color: rgb(231, 209, 121);font-size: 24px">
-        {{status === 2 ? '正在热映' : '即将上映'}}
+      <span class="title">
+        {{ status === 2 ? '正在热映' : '即将上映' }}
         ({{ filmArr.length }})
       </span>
-      <el-link
-        type="primary"
-        style="float: right;"
-        @click="toShowAllFilm()"
-      >
+      <el-link type="primary" style="float: right;" @click="toShowAllFilm()">
         全部
         <i class="el-icon-arrow-right"></i>
       </el-link>
     </div>
 
     <div class="box">
-      <template
-        v-for="item in handleFilmArr"
-      >
+      <template v-for="item in handleFilmArr">
         <FilmItem :item="item" :key="item.id"></FilmItem>
       </template>
 
@@ -66,8 +60,8 @@ export default {
     },
   },
   computed: {
-    handleFilmArr(){
-      return this.filmArr.slice(0,8)
+    handleFilmArr() {
+      return this.filmArr.slice(0, 8)
     }
   },
   methods: {
@@ -81,27 +75,35 @@ export default {
 </script>
 
 
-<style scoped lang="less">
-
+<style scoped lang="scss">
 #filmHome {
   margin-top: 20px;
+
   .head {
     text-align: left;
     height: 30px;
     line-height: 30px;
     margin-bottom: 20px;
+
+    .title {
+      color: rgb(231, 209, 121);
+      font-size: 24px
+    }
   }
+
   .box {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
 
 }
+
 .lightgreen-box {
   background-color: lightgreen;
   height: 24px;
 }
+
 .orange-box {
   background-color: orange;
   height: 24px;

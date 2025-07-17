@@ -1,137 +1,58 @@
 <template>
   <div id="main">
     <el-container>
-      <el-header>
+      <el-header class="navBar">
         <div class="head">
-          <el-menu
-            :default-active="indexPath"
-            class="el-menu-demo"
-            mode="horizontal"
-            router
-          >
-            <div style="float: left;width: 250px;">
-              <el-avatar
-                shape="square"
-                :size="50"
-                fit="fill"
-                :src="url"
-                style="vertical-align: middle;margin-left: 10%"
-              ></el-avatar>
-
-              <span style="font-size: 22px;margin-left: 10px;font-weight: bold;"> 影院购票界面</span>
-            </div>
-            <el-menu-item
-              index="/user/home"
-              style="margin-left: 30px;"
-            >首页</el-menu-item>
-
+          <div class="title">
+            <el-avatar shape="square" :size="50" fit="fill" :src="url"></el-avatar>
+            <span> 影院购票界面</span>
+          </div>
+          <el-menu :default-active="indexPath" class="el-menu-demo" mode="horizontal" router>
+            <el-menu-item index="/user/home">首页</el-menu-item>
             <el-menu-item index="/user/movies">电影</el-menu-item>
-
-            <el-input
-              v-model="title"
-              placeholder="请输入要查询的电影名"
-              style="width: 20%;margin-left: 50px"
-            ></el-input>
-            <!-- <el-button
-              icon="el-icon-search"
-              circle
-              style="margin-left: 10px"
-              @click="pageQueryByTitle()"
-            ></el-button> -->
-            <el-button
-              type="success"
-              style="margin-left: 5%"
-              @click="dialogVisible = true"
-            >充值</el-button>
-
-            <div style="float: right">
-              <el-avatar
-                v-if="user && user.image"
-                :src="user.image"
-                style="vertical-align: middle;"
-              ></el-avatar>
-              <el-avatar
-                icon="el-icon-user-solid"
-                v-else
-                style="vertical-align: middle;"
-              ></el-avatar>
-              <el-dropdown
-                @command="handleCommand"
-                style="font-size: 16px;"
-              >
-
-                <span
-                  class="el-dropdown-link"
-                  style="width: 100px;display: inline-block;margin-left: 10px"
-                >
-                  {{ user.username }}
-                  <i class="el-icon-arrow-down"></i>
-
-                </span>
-
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    command="/user/me/cart"
-                    icon="el-icon-shopping-cart-2"
-                  >我的购物车</el-dropdown-item>
-                  <el-dropdown-item
-                    command="/user/me/order"
-                    icon="el-icon-s-order"
-                  >我的订单</el-dropdown-item>
-                  <el-dropdown-item
-                    command="/user/me/detail"
-                    icon="el-icon-user-solid"
-                  >个人详情</el-dropdown-item>
-                  <el-dropdown-item
-                    command="out"
-                    icon="el-icon-switch-button"
-                  >退出登录</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </div>
-
           </el-menu>
+          <el-input v-model="title" placeholder="请输入要查询的电影名" style="width: 20%;"></el-input>
 
+          <el-button type="success" @click="dialogVisible = true">充值</el-button>
+
+          <div class="right">
+            <el-avatar v-if="user && user.image" :src="user.image"></el-avatar>
+            <el-avatar icon="el-icon-user-solid" v-else></el-avatar>
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link">
+                {{ user.username }}
+                <i class="el-icon-arrow-down"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="/user/me/cart" icon="el-icon-shopping-cart-2">我的购物车</el-dropdown-item>
+                <el-dropdown-item command="/user/me/order" icon="el-icon-s-order">我的订单</el-dropdown-item>
+                <el-dropdown-item command="/user/me/detail" icon="el-icon-user-solid">个人详情</el-dropdown-item>
+                <el-dropdown-item command="out" icon="el-icon-switch-button">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
         </div>
       </el-header>
 
-      <el-dialog
-        title="充值"
-        :visible.sync="dialogVisible"
-        width="30%"
-        @close="resetMoney"
-      >
+      <el-dialog title="充值" :visible.sync="dialogVisible" width="30%" @close="resetMoney">
         <div>
           <el-radio-group v-model="money">
-            <el-radio
-              :label="item"
-              border
-              v-for="item in moneyArr"
-              style="width: 150px;margin: 20px"
-            >{{ item }} 元</el-radio>
+            <el-radio :label="item" border v-for="item in moneyArr" style="width: 150px;margin: 20px">{{
+              item }}
+              元</el-radio>
           </el-radio-group>
           优惠：
           <span style="color: rgb(194, 199, 213)">一次性充值1000元的用户享八折优惠，充值400元以上的享九折优惠，充值200元以上的享九五折优惠</span>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
+        <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="recharge()"
-          >充 值</el-button>
+          <el-button type="primary" @click="recharge()">充 值</el-button>
         </span>
 
       </el-dialog>
-
+      <div class="emptyBox"></div>
       <el-main>
-        <router-view
-          v-if="showView"
-          :titleName="title"
-        ></router-view>
-
+        <router-view v-if="showView" :titleName="title"></router-view>
       </el-main>
     </el-container>
 
@@ -235,34 +156,61 @@ export default {
 </script>
 
 
-<style scoped>
-* {
-  box-sizing: border-box;
-}
+<style scoped lang="scss">
+$height: 80px;
 #main {
   width: 100vw;
   height: 100vh;
-}
-#main .el-header {
-  padding: 0;
-}
-#main .head {
-  padding: 0;
-  width: 100%;
+  font-size: 14px;
+  position: relative;
 
-  position: fixed;
-  top: 0;
-  line-height: 60px;
-  z-index: 10;
-  background-color: #fff;
-  border-bottom: 1px solid pink;
-}
-.el-menu-demo {
-  /* width: 100%; */
-  width: 1300px;
-  height: 60px;
-  border: 0;
-  margin: auto;
+  .navBar {
+    width: 100%;
+    height: $height !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: #fff;
+    border-bottom: 1px solid pink;
+
+    .head {
+      width: 1200px;
+      height: $height;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .el-menu-demo {
+        height: 100%;
+        width: 200px;
+        border: 0;
+        margin-left: 250px;
+        background: transparent;
+      }
+
+      .right {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+    }
+  }
+
+  .emptyBox {
+    height: $height + 20px;
+  }
+
 }
 
 .el-main {

@@ -11,6 +11,7 @@ import * as echarts from 'echarts'
 import axios from 'axios'
 import globalConstant from '@/utils/global-constant'
 import SearchTableTemplate from "@/components/SearchTableTemplate.vue";
+import '@/utils/rem.js'
 Vue.prototype.$constant = globalConstant
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
