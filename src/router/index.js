@@ -19,7 +19,7 @@ VueRouter.prototype.push = function push(location) {
 
 
 
-const whiteList = ['/login','/404','/register']
+const whiteList = ['/login','/404','/register','/test']
 router.beforeEach(async (to, from, next) => {
   const token = store.getters.token
   const roleId = store.getters.roleId

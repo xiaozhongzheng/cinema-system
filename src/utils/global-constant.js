@@ -8,6 +8,9 @@ const userRoleArr = ['','员工','管理员']
 const buttonStatusArr = ['禁用','启用']
 const rolePathArr = ['/user','/employee','/admin']
 const payStatus = ['已取消','已支付','已完成']
+
+
+
 // 导出变量
 export default {
     host,

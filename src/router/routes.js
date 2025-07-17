@@ -31,6 +31,12 @@ export const routes = [
     component: () => import('../views/user/register')
   },
   {
+    path: '/test',
+    name: 'test',
+    hidden: true,
+    component: () => import('../views/test')
+  },
+  {
     path: '/404',
     hidden: true,
     component: () => import('@/views/404/404View.vue')
