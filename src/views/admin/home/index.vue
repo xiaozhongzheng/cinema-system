@@ -1,19 +1,15 @@
 <template>
-  <div
-    id="home"
-  >
+  <div id="home">
     <div class="echarts">
       <!-- 展示每部影片的票房 -->
-      <HomeBarTicket
-        v-if="filmList.length"
-        :itemArr="handleFilmArr"
-        :echartsOption="echartsOption"
-      ></HomeBarTicket>
+      <HomeBarTicket v-if="filmList.length" :itemArr="handleFilmArr" :echartsOption="echartsOption"></HomeBarTicket>
       <!-- 展示每个月的销量 -->
-      <HomeLine v-if="monthTicketList.length" :echartsOption="echartsOption" :itemArr="handleMonthTicketList"></HomeLine>
+      <HomeLine v-if="monthTicketList.length" :echartsOption="echartsOption" :itemArr="handleMonthTicketList">
+      </HomeLine>
       <!-- 展示不同类型的影片的票房数  -->
       <HomePie v-if="boxOfficeList.length" :itemArr="handleBoxOfficeList"></HomePie>
-      <HomeBarAmount v-if="amountList.length" :itemArr="handleMonthAmountList" :echartsOption="echartsOption" ></HomeBarAmount>
+      <HomeBarAmount v-if="amountList.length" :itemArr="handleMonthAmountList" :echartsOption="echartsOption">
+      </HomeBarAmount>
 
     </div>
 
@@ -22,7 +18,7 @@
 
 
 <script>
-import { getFilmBoxOfficeApi,getMonthTicketApi,getMonthAmountApi } from "@/api/orders";
+import { getFilmBoxOfficeApi, getMonthTicketApi, getMonthAmountApi } from "@/api/orders";
 import { getBoxOfficeByTypeApi } from "@/api/film";
 import HomeBarTicket from "./components/HomeBarTicket.vue";
 import HomePie from "./components/HomePie.vue";
@@ -84,7 +80,7 @@ export default {
     // data底部
   },
 
-  mounted() {},
+  mounted() { },
   computed: {
     handleFilmArr() {
       return this.filmList.map((item) => {
@@ -94,7 +90,7 @@ export default {
         };
       });
     },
-    handleMonthTicketList(){
+    handleMonthTicketList() {
       return this.monthTicketList.map((item) => {
         return {
           name: +item.month.split("-")[1] + "月",
@@ -112,7 +108,7 @@ export default {
         };
       });
     },
-    handleMonthAmountList(){
+    handleMonthAmountList() {
       return this.amountList.map((item) => {
         return {
           name: +item.month.split("-")[1] + "月",
@@ -131,7 +127,7 @@ export default {
   methods: {
     async getFilmBoxOffice() {
       this.filmList = await getFilmBoxOfficeApi();
-      this.filmList.sort((a,b) => b.boxOffice - a.boxOffice)
+      this.filmList.sort((a, b) => b.boxOffice - a.boxOffice)
       console.log(this.filmList);
     },
     async getMonthTicket() {
@@ -153,6 +149,7 @@ export default {
 <style scoped lang="scss">
 #home {
   padding: 10px;
+
   .echarts {
     display: grid;
     grid-template-columns: 1fr 1fr;
