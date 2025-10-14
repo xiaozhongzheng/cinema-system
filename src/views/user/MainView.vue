@@ -76,14 +76,6 @@ export default {
           name: '电影大全',
           path: '/user/movies',
         },
-        {
-          name: '电影大全',
-          path: '/user/movies',
-        },
-        {
-          name: '电影大全',
-          path: '/user/movies',
-        },
       ],
       activeIndex: 0,
       title: "",
