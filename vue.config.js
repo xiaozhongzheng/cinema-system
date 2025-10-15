@@ -8,7 +8,8 @@ module.exports = defineConfig({
     port: 8088, // 设置端口号
     proxy: {
       '/api': {
-        target: `http://localhost:8080`, // 解决跨域问题
+        // target: `http://localhost:8080`, // 代理到本地
+        target: `http://106.52.252.158:8080`, // 代理到服务器
         changeOrigin: true,
         pathRewrite: {
           '^/api': '' // 重定向

@@ -226,8 +226,8 @@ export default {
       seats: [[]], // 存放初始化时的座位数组
       seatNumberArr: [], // 存放当前用户已选的座位信息
       phone: "",
-      // path: "ws://47.96.128.212:8080/chooseSeat",
-      path: "ws://localhost:8888/chooseSeat",
+      path: "ws://106.52.252.158:8080/chooseSeat",
+      // path: "ws://localhost:8888/chooseSeat",
       seatArr: [], // 存放的是服务器传递过来的座位信息
     };
   },
